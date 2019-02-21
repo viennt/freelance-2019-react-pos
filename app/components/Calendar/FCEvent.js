@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import faker from 'faker';
 
 const EventWrapper = styled.div`
   background: #f4f4f5;
@@ -42,23 +42,21 @@ const Options = styled.div`
   font-style: italic;
 `;
 
-export default function FCEvent() {
-  const eventInfo = {
-    idNumber: faker.random.number({ min: 10, max: 99 }),
-    userFullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    phoneNumber: faker.phone.phoneNumber('0### ### ###'),
-    option1: 'Full set',
-    option2: 'Get',
-    option3: 'Pill others',
-  };
+function FCEvent({ data }) {
   return (
-    <EventWrapper data-event-information={JSON.stringify(eventInfo)}>
-      <IdNumber>#{eventInfo.idNumber}</IdNumber>
-      <UserFullName>{eventInfo.userFullName}</UserFullName>
-      <PhoneNumber>{eventInfo.phoneNumber}</PhoneNumber>
-      <Options>- {eventInfo.option1}</Options>
-      <Options>- {eventInfo.option2}</Options>
-      <Options>- {eventInfo.option3}</Options>
+    <EventWrapper data-event-information={JSON.stringify(data)}>
+      <IdNumber>#{data.idNumber}</IdNumber>
+      <UserFullName>{data.userFullName}</UserFullName>
+      <PhoneNumber>{data.phoneNumber}</PhoneNumber>
+      <Options>- {data.option1}</Options>
+      <Options>- {data.option2}</Options>
+      <Options>- {data.option3}</Options>
     </EventWrapper>
   );
 }
+
+FCEvent.propTypes = {
+  data: PropTypes.object,
+};
+
+export default FCEvent;
