@@ -12,6 +12,8 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 
 import AppointmentPage from 'containers/AppointmentPage/Loadable';
+import MarketingPage from 'containers/MarketingPage/Loadable';
+import CheckoutPage from 'containers/CheckoutPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 // import Header from 'components/Header';
 // import Footer from 'components/Footer';
@@ -23,6 +25,9 @@ const AppWrapper = styled.div`
   display: flex;
   min-height: 100%;
   flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 `;
 
 export default function App() {
@@ -36,7 +41,10 @@ export default function App() {
       </Helmet>
       {/* <Header /> */}
       <Switch>
+        <Route exact path="/" component={AppointmentPage} />
+        <Route path="/marketing" component={MarketingPage} />
         <Route path="/appointment" component={AppointmentPage} />
+        <Route path="/checkout" component={CheckoutPage} />
         <Route path="" component={NotFoundPage} />
       </Switch>
       {/* <Footer /> */}
