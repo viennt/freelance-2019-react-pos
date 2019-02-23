@@ -1,14 +1,18 @@
 import React from 'react';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import DayPicker from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import OutsideClickHandler from 'react-outside-click-handler';
 
 const MiniCalendarWrapper = styled.div`
-  width: 5.05rem;
+  width: calc(5.05rem - 1px);
   height: 100%;
   text-align: center;
-  border-right: 2px solid #3883bb;
+  border-right: 1px solid #3883bb;
   position: relative;
   padding: 0.5rem;
 `;
@@ -72,16 +76,21 @@ class MiniCalendar extends React.Component {
   }
 
   onDaySelected(day) {
-    alert(day);
+    const { onChangeDay } = this.props;
+    onChangeDay(moment(new Date(day)).format('YYYY-MM-DD'));
   }
 
   renderPopup() {
+    const { selectedDay } = this.props;
     const { isPopupOpen } = this.state;
     return isPopupOpen ? (
       <CalendarPopup>
         <CalendarPopup.Heading>Calendar</CalendarPopup.Heading>
         <CalendarPopup.Body>
-          <DayPicker onDayClick={day => this.onDaySelected(day)} />
+          <DayPicker
+            selectedDays={[selectedDay.toDate()]}
+            onDayClick={day => this.onDaySelected(day)}
+          />
         </CalendarPopup.Body>
       </CalendarPopup>
     ) : (
@@ -92,6 +101,13 @@ class MiniCalendar extends React.Component {
   render() {
     return (
       <OutsideClickHandler onOutsideClick={() => this.onOutsideClickPopup()}>
+        <Helmet>
+          <style>{`
+            .DayPicker-Day--today {
+              color: #00e260;
+            }
+          `}</style>
+        </Helmet>
         <MiniCalendarWrapper>
           <Button onClick={() => this.onClickButton()}>
             <FaCalendarAlt />
@@ -102,5 +118,10 @@ class MiniCalendar extends React.Component {
     );
   }
 }
+
+MiniCalendar.propTypes = {
+  selectedDay: PropTypes.object,
+  onChangeDay: PropTypes.func,
+};
 
 export default MiniCalendar;

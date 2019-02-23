@@ -4,10 +4,8 @@ import styled from 'styled-components';
 import FCAgenda from './FCAgenda';
 import FCDragZone from './FCDragZone';
 
-import {
-  MAIN_CALENDAR_OPTIONS,
-  MOCK_WAITING_EVENTS,
-} from '../../containers/AppointmentPage/constants';
+import { MAIN_CALENDAR_OPTIONS } from '../../containers/AppointmentPage/constants';
+import { MOCK_WAITING_EVENTS } from '../../containers/AppointmentPage/mockData';
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -20,7 +18,7 @@ const CalendarWrapper = styled.div`
 
 const MainCalendar = styled.div`
   flex: 1 0;
-  border-right: 2px solid #3883bb;
+  border-right: 1px solid #3883bb;
 `;
 
 const RightSideBar = styled.div`

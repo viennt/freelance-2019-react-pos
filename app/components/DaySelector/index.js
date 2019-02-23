@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
 
 import MiniCalendar from './MiniCalendar';
+import DateSlider from './DateSlider';
 
 const DaySelectorWrapper = styled.div`
   width: 100%;
@@ -13,30 +15,9 @@ const DaySelectorWrapper = styled.div`
   display: flex;
 `;
 
-const DateSlider = styled.div`
-  display: flex;
-  width: calc(100% - 5.05rem - 2px);
-`;
-
-DateSlider.Item = styled.div`
-  flex: 1;
-  border-right: 1px solid #3883bb;
-  text-align: center;
-  padding: 0.5rem;
-`;
-
-DateSlider.ActiveItem = styled.div`
-  flex: 1;
-  border-right: 1px solid #3883bb;
-  text-align: center;
-  padding: 0.5rem;
-  background: #0071c5;
-  color: #ffffff;
-`;
-
 class DaySelector extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     const startOfWeek = moment().startOf('isoWeek');
     const endOfWeek = moment().endOf('isoWeek');
 
@@ -49,30 +30,27 @@ class DaySelector extends React.Component {
     }
   }
 
-  renderItem(day, index) {
-    return day.format('DDMMYYYY') === moment().format('DDMMYYYY') ? (
-      <DateSlider.ActiveItem key={index}>
-        <div>{day.format('dddd')}</div>
-        <div>{day.format('MM/DD/YYYY')}</div>
-      </DateSlider.ActiveItem>
-    ) : (
-      <DateSlider.Item key={index}>
-        <div>{day.format('dddd')}</div>
-        <div>{day.format('MM/DD/YYYY')}</div>
-      </DateSlider.Item>
-    );
-  }
-
   render() {
+    const { currentDay, weekDays, onChangeDay, onChangeWeek } = this.props;
     return (
       <DaySelectorWrapper>
-        <MiniCalendar />
-        <DateSlider>
-          {this.days.map((day, index) => this.renderItem(day, index))}
-        </DateSlider>
+        <MiniCalendar selectedDay={currentDay} onChangeDay={onChangeDay} />
+        <DateSlider
+          days={weekDays.valueSeq().toArray()}
+          selectedDay={currentDay}
+          onChangeDay={onChangeDay}
+          onChangeWeek={onChangeWeek}
+        />
       </DaySelectorWrapper>
     );
   }
 }
+
+DaySelector.propTypes = {
+  currentDay: PropTypes.object,
+  weekDays: PropTypes.object,
+  onChangeDay: PropTypes.func,
+  onChangeWeek: PropTypes.func,
+};
 
 export default DaySelector;

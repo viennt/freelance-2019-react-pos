@@ -48,10 +48,10 @@ const GlobalStyle = createGlobalStyle`
     border-width: 1px;
   }
   .fc-unthemed .fc-axis {
-    border-right: 2px solid #1484c0;
+    border-right: 1px solid #1484c0;
   }
   .fc th {
-    border-width: 2px;
+    border-width: 1px;
   }
   .fc-resource-cell {
     position: relative;

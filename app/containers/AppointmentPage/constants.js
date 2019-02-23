@@ -1,82 +1,5 @@
-import faker from 'faker';
 import $ from 'jquery';
-
-export const MOCK_WAITING_EVENTS = [
-  {
-    idNumber: faker.random.number({ min: 10, max: 99 }),
-    userFullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    phoneNumber: faker.phone.phoneNumber('0### ### ###'),
-    option1: 'Full set',
-    option2: 'Get',
-    option3: 'Pill others',
-  },
-  {
-    idNumber: faker.random.number({ min: 10, max: 99 }),
-    userFullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    phoneNumber: faker.phone.phoneNumber('0### ### ###'),
-    option1: 'Full set',
-    option2: 'Get',
-    option3: 'Pill others',
-  },
-  {
-    idNumber: faker.random.number({ min: 10, max: 99 }),
-    userFullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    phoneNumber: faker.phone.phoneNumber('0### ### ###'),
-    option1: 'Full set',
-    option2: 'Get',
-    option3: 'Pill others',
-  },
-  {
-    idNumber: faker.random.number({ min: 10, max: 99 }),
-    userFullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    phoneNumber: faker.phone.phoneNumber('0### ### ###'),
-    option1: 'Full set',
-    option2: 'Get',
-    option3: 'Pill others',
-  },
-  {
-    idNumber: faker.random.number({ min: 10, max: 99 }),
-    userFullName: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    phoneNumber: faker.phone.phoneNumber('0### ### ###'),
-    option1: 'Full set',
-    option2: 'Get',
-    option3: 'Pill others',
-  },
-];
-
-export const MOCK_EVENTS = [
-  {
-    resourceId: 1,
-    start: '2019-02-22T07:00:00+00:00',
-    data: {
-      idNumber: '01',
-      userFullName: 'Tiffany Brenda',
-      phoneNumber: '0123 456 789',
-      option1: 'Full set',
-      option2: 'Get',
-      option3: 'Pill others',
-    },
-  },
-  {
-    resourceId: 6,
-    start: '2019-02-22T09:00:00+00:00',
-    data: {
-      idNumber: '02',
-      userFullName: 'Hattie Blanda',
-      phoneNumber: '0123 456 789',
-      option1: 'Full set',
-      option2: 'Get',
-      option3: 'Pill others',
-    },
-  },
-];
-
-export const MOCK_RESOURCES = [2, 1, 5, 4, 6, 3].map(orderNumber => ({
-  id: orderNumber,
-  title: faker.name.firstName(1),
-  imageUrl: faker.image.avatar(),
-  orderNumber,
-}));
+import { MOCK_EVENTS, MOCK_RESOURCES } from './mockData';
 
 export const EVENT_RENDER_TEMPLATE = event => `
   <div class="app-event">
@@ -126,3 +49,18 @@ export const MAIN_CALENDAR_OPTIONS = {
     labelTds[0].innerHTML = RESOURCE_RENDER_TEMPLATE(resourceObj);
   },
 };
+
+/*
+ * HomeConstants
+ * Each action has a corresponding type, which the reducer knows and picks up on.
+ * To avoid weird typos between the reducer and the actions, we save them as
+ * constants here. We prefix them with 'yourproject/YourComponent' so we avoid
+ * reducers accidentally picking up actions they shouldn't.
+ *
+ * Follow this format:
+ * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
+ */
+
+export const SELECT_DAY = 'app/Appointment/SELECT_DAY';
+
+export const SELECT_WEEK = 'app/Appointment/SELECT_WEEK';
