@@ -68,6 +68,7 @@ const GlobalStyle = createGlobalStyle`
   // ############################################
   .app-resource__avatar {
     padding: 2px;
+    height: 3.5rem;
   }
   .app-resource__avatar img {
     width: 56px;
