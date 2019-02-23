@@ -64,3 +64,5 @@ export const MAIN_CALENDAR_OPTIONS = {
 export const SELECT_DAY = 'app/Appointment/SELECT_DAY';
 
 export const SELECT_WEEK = 'app/Appointment/SELECT_WEEK';
+
+export const SELECT_DAY_CALENDAR = 'app/Appointment/SELECT_DAY_CALENDAR';

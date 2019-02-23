@@ -15,10 +15,10 @@
  *    }
  */
 
-import { SELECT_DAY, SELECT_WEEK } from './constants';
+import { SELECT_DAY, SELECT_DAY_CALENDAR, SELECT_WEEK } from './constants';
 
 /**
- * Select day from mini calendar or day slider
+ * Select day on mini calendar or day slider
  *
  * @param  {string} day The string with format YYYY-MM-DD
  *
@@ -32,7 +32,7 @@ export function selectDay(day) {
 }
 
 /**
- * Select week from day slider
+ * Select week on day slider
  *
  * @param  {string} dayOfWeek The string with format YYYY-MM-DD
  *
@@ -42,5 +42,19 @@ export function selectWeek(dayOfWeek) {
   return {
     type: SELECT_WEEK,
     dayOfWeek,
+  };
+}
+
+/**
+ * Select day on mini calendar
+ *
+ * @param  {string} day The string with format YYYY-MM-DD
+ *
+ * @return {object}    An action object with a type of SELECT_DAY
+ */
+export function selectDayOnCalendar(day) {
+  return {
+    type: SELECT_DAY_CALENDAR,
+    day,
   };
 }

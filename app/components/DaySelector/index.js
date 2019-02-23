@@ -31,10 +31,19 @@ class DaySelector extends React.Component {
   }
 
   render() {
-    const { currentDay, weekDays, onChangeDay, onChangeWeek } = this.props;
+    const {
+      currentDay,
+      weekDays,
+      onChangeDay,
+      onChangeWeek,
+      onChangeDayOnCalendar,
+    } = this.props;
     return (
       <DaySelectorWrapper>
-        <MiniCalendar selectedDay={currentDay} onChangeDay={onChangeDay} />
+        <MiniCalendar
+          selectedDay={currentDay}
+          onChangeDay={onChangeDayOnCalendar}
+        />
         <DateSlider
           days={weekDays.valueSeq().toArray()}
           selectedDay={currentDay}
@@ -51,6 +60,7 @@ DaySelector.propTypes = {
   weekDays: PropTypes.object,
   onChangeDay: PropTypes.func,
   onChangeWeek: PropTypes.func,
+  onChangeDayOnCalendar: PropTypes.func,
 };
 
 export default DaySelector;
