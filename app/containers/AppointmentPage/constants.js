@@ -46,7 +46,7 @@ export const MAIN_CALENDAR_OPTIONS = {
     element[0].innerHTML = EVENT_RENDER_TEMPLATE(event.data);
   },
   resourceRender: (resourceObj, labelTds) => {
-    labelTds[0].innerHTML = RESOURCE_RENDER_TEMPLATE(resourceObj);
+    labelTds[0].innerHTML = '';
   },
 };
 

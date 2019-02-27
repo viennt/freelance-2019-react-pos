@@ -17,7 +17,7 @@ const MiniCalendarWrapper = styled.div`
   padding: 0.5rem;
 `;
 
-const Button = styled.div`
+MiniCalendarWrapper.Button = styled.div`
   border-radius: 4px;
   background: #0071c5;
   color: #ffffff;
@@ -88,6 +88,7 @@ class MiniCalendar extends React.Component {
         <CalendarPopup.Heading>Calendar</CalendarPopup.Heading>
         <CalendarPopup.Body>
           <DayPicker
+            firstDayOfWeek={1}
             selectedDays={[selectedDay.toDate()]}
             onDayClick={day => this.onDaySelected(day)}
           />
@@ -109,9 +110,9 @@ class MiniCalendar extends React.Component {
           `}</style>
         </Helmet>
         <MiniCalendarWrapper>
-          <Button onClick={() => this.onClickButton()}>
+          <MiniCalendarWrapper.Button onClick={() => this.onClickButton()}>
             <FaCalendarAlt />
-          </Button>
+          </MiniCalendarWrapper.Button>
           {this.renderPopup()}
         </MiniCalendarWrapper>
       </OutsideClickHandler>

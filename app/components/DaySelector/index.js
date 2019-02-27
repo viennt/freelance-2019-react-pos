@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import MiniCalendar from './MiniCalendar';
-import DateSlider from './DateSlider';
+import DaySlider from './DaySlider';
 
 const DaySelectorWrapper = styled.div`
   width: 100%;
@@ -44,7 +44,7 @@ class DaySelector extends React.Component {
           selectedDay={currentDay}
           onChangeDay={onChangeDayOnCalendar}
         />
-        <DateSlider
+        <DaySlider
           days={weekDays.valueSeq().toArray()}
           selectedDay={currentDay}
           onChangeDay={onChangeDay}

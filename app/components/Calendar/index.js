@@ -12,7 +12,7 @@ const CalendarWrapper = styled.div`
   border-left: 2px solid #3883bb;
   border-right: 2px solid #3883bb;
   border-bottom: 2px solid #3883bb;
-  height: calc(100% - 3rem - 4rem);
+  height: calc(100% - 3rem - 4rem - 4rem);
   overflow: hidden;
 `;
 
@@ -23,16 +23,6 @@ const MainCalendar = styled.div`
 
 const RightSideBar = styled.div`
   width: calc((100vw - 5.05rem) / 7);
-`;
-
-RightSideBar.Heading = styled.div`
-  height: 64px;
-  text-align: center;
-  line-height: 64px;
-  font-size: 18px;
-  color: #333333;
-  background: #f4f4f5;
-  border-bottom: 2px solid #3883bb;
   border-top: 2px solid #3883bb;
 `;
 
@@ -43,7 +33,6 @@ function Calendar() {
         <FCAgenda options={MAIN_CALENDAR_OPTIONS} />
       </MainCalendar>
       <RightSideBar>
-        <RightSideBar.Heading>Waiting</RightSideBar.Heading>
         <FCDragZone events={MOCK_WAITING_EVENTS} />
       </RightSideBar>
     </CalendarWrapper>

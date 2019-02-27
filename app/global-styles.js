@@ -35,7 +35,7 @@ const GlobalStyle = createGlobalStyle`
 }
   .fc-unthemed th, .fc-unthemed td {
     border-color: #1484c0;
-    border-width: 2px;
+    border-width: 1px;
   }
   .fc-unthemed th:first-child, .fc-unthemed td:first-child {
     border-left: none;
@@ -61,42 +61,6 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     background: #00b4f7;
     color: #ffffff;
-  }
-
-  // ############################################
-  // Main calendar - App Resource
-  // ############################################
-  .app-resource__avatar {
-    padding: 2px;
-    height: 3.5rem;
-  }
-  .app-resource__avatar img {
-    width: 56px;
-    border-radius: 50%;
-  }
-  .app-resource__order-number {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: #3883bb;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    color: #ffffff;
-    padding: 2px;
-    font-size: 12px;
-    line-height: 1.3
-  }
-  .app-resource__title {
-    position: absolute;
-    bottom: 0;
-    background: #ffffff;
-    width: 100%;
-    opacity: 0.75;
-    text-align:center;
-    padding-bottom: 4px;
-    font-size: 13px;
-    line-height: 1.3;
   }
   
   // ############################################
