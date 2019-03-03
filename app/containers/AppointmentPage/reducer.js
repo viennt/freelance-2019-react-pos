@@ -18,6 +18,9 @@ import {
   LOAD_MEMBERS,
   LOAD_MEMBERS_ERROR,
   LOAD_MEMBERS_SUCCESS,
+  LOAD_APPOINTMENTS_BY_MEMBERS,
+  LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS,
+  LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -43,6 +46,7 @@ export const initialState = fromJS({
     displayed: [],
   },
   appointments: {
+    calendar: [],
     waiting: [],
   },
 });
@@ -77,6 +81,12 @@ function appointmentReducer(state = initialState, action) {
         .set('loading', false);
     case LOAD_MEMBERS_ERROR:
       return state.set('error', action.error).set('loading', false);
+    case LOAD_APPOINTMENTS_BY_MEMBERS:
+      return state.setIn(['appointments', 'calendar'], []);
+    case LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS:
+      return state.setIn(['appointments', 'calendar'], action.appointments);
+    case LOAD_APPOINTMENTS_BY_MEMBERS_ERROR:
+      return state.set('error', action.error);
     default:
       return state;
   }

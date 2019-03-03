@@ -128,9 +128,12 @@ class ResourceSelector extends React.Component {
     nextSlide(event);
   }
 
-  // afterSlide(index) {
-  //   const { resources } = this.props;
-  // }
+  afterSlide(index) {
+    const { resources, loadAppointmentByMembers } = this.props;
+    loadAppointmentByMembers({
+      memberIds: resources.slice(index, index + 6).map(resource => resource.id),
+    });
+  }
 
   onTodayClick() {
     const { onChangeToday } = this.props;
@@ -143,9 +146,7 @@ class ResourceSelector extends React.Component {
         <Resource.Avatar>
           <img src={resource.imageUrl} alt={resource.orderNumber} />
         </Resource.Avatar>
-        <Resource.OrderNumber
-          notEmpty={resource.appointments && resource.appointments.length}
-        >
+        <Resource.OrderNumber notEmpty={resource.numberOfAppointments}>
           {resource.orderNumber}
         </Resource.OrderNumber>
         <Resource.Title>{resource.title}</Resource.Title>
@@ -223,6 +224,7 @@ ResourceSelector.propTypes = {
   resources: PropTypes.any,
   onChangeToday: PropTypes.func,
   loadMembers: PropTypes.func,
+  loadAppointmentByMembers: PropTypes.func,
   loading: PropTypes.bool,
 };
 

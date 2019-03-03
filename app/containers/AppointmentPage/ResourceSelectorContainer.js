@@ -9,12 +9,18 @@ import {
   makeSelectError,
   makeSelectMembers,
 } from './selectors';
-import { selectDayOnCalendar, loadMembers } from './actions';
+import {
+  selectDayOnCalendar,
+  loadMembers,
+  loadAppointmentByMembers,
+} from './actions';
 
 export function mapDispatchToProps(dispatch) {
   return {
     onChangeToday: day => dispatch(selectDayOnCalendar(day)),
     loadMembers: options => dispatch(loadMembers(options)),
+    loadAppointmentByMembers: options =>
+      dispatch(loadAppointmentByMembers(options)),
   };
 }
 

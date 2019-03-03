@@ -16,6 +16,9 @@
  */
 
 import {
+  LOAD_APPOINTMENTS_BY_MEMBERS,
+  LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
+  LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS,
   LOAD_MEMBERS,
   LOAD_MEMBERS_ERROR,
   LOAD_MEMBERS_SUCCESS,
@@ -26,9 +29,7 @@ import {
 
 /**
  * Select day on mini calendar or day slider
- *
  * @param  {string} day The string with format DDMMYYYY
- *
  * @return {object}    An action object with a type of SELECT_DAY
  */
 export function selectDay(day) {
@@ -40,9 +41,7 @@ export function selectDay(day) {
 
 /**
  * Select week on day slider
- *
  * @param  {string} dayOfWeek The string with format DDMMYYYY
- *
  * @return {object}    An action object with a type of SELECT_DAY
  */
 export function selectWeek(dayOfWeek) {
@@ -54,9 +53,7 @@ export function selectWeek(dayOfWeek) {
 
 /**
  * Select day on mini calendar
- *
  * @param  {string} day The string with format DDMMYYYY
- *
  * @return {object}    An action object with a type of SELECT_DAY
  */
 export function selectDayOnCalendar(day) {
@@ -68,9 +65,7 @@ export function selectDayOnCalendar(day) {
 
 /**
  * Load the members, this action starts the request saga
- *
  * @param  {object} options The url options
- *
  * @return {object} An action object with a type of LOAD_MEMBERS
  */
 export function loadMembers(options) {
@@ -82,9 +77,7 @@ export function loadMembers(options) {
 
 /**
  * Dispatched when the members are loaded by the request saga
- *
  * @param  {array} members The members data
- *
  * @return {object}      An action object with a type of LOAD_MEMBERS_SUCCESS passing the members
  */
 export function membersLoaded(members) {
@@ -96,14 +89,48 @@ export function membersLoaded(members) {
 
 /**
  * Dispatched when loading the members fails
- *
  * @param  {object} error The error
- *
  * @return {object}       An action object with a type of LOAD_MEMBERS_ERROR passing the error
  */
 export function memberLoadingError(error) {
   return {
     type: LOAD_MEMBERS_ERROR,
+    error,
+  };
+}
+
+/**
+ * Load the appointment by members, this action starts the request saga
+ * @param  {object} options The url options
+ * @return {object} An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS
+ */
+export function loadAppointmentByMembers(options) {
+  return {
+    type: LOAD_APPOINTMENTS_BY_MEMBERS,
+    ...options,
+  };
+}
+
+/**
+ * Dispatched when the appointment by members are loaded by the request saga
+ * @param  {array} appointments The appointments data
+ * @return {object}      An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS passing the members
+ */
+export function appointmentByMembersLoaded(appointments) {
+  return {
+    type: LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS,
+    appointments,
+  };
+}
+
+/**
+ * Dispatched when loading the appointment by members fails
+ * @param  {object} error The error
+ * @return {object}       An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS_ERROR passing the error
+ */
+export function appointmentByMemberLoadingError(error) {
+  return {
+    type: LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
     error,
   };
 }
