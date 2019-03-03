@@ -36,6 +36,11 @@ import {
   POST_ASSIGN_APPOINTMENT_API,
 } from '../../../app-constants';
 
+import { members as mockedMembers } from '../../assets/mocks/members';
+import { waitingAppointments as mockedWaitingAppointments } from '../../assets/mocks/waitingAppointments';
+import { appointments as mockedAppointments } from '../../assets/mocks/appointments';
+import { assignAppointment as mockedAssignAppointment } from '../../assets/mocks/assignAppointment';
+
 /* **************************** API Caller ********************************* */
 
 export function* getMembers() {
@@ -46,7 +51,10 @@ export function* getMembers() {
   yield delay(1000);
 
   try {
-    const members = yield call(request, requestURL.toString());
+    const members =
+      process.env.NODE_ENV === 'production'
+        ? mockedMembers
+        : yield call(request, requestURL.toString());
     yield put(
       membersLoaded(
         members.map(member => ({
@@ -72,7 +80,10 @@ export function* getWaitingAppointments() {
   yield delay(1000);
 
   try {
-    const appointments = yield call(request, requestURL.toString());
+    const appointments =
+      process.env.NODE_ENV === 'production'
+        ? mockedWaitingAppointments
+        : yield call(request, requestURL.toString());
     yield put(waitingAppointmentsLoaded(appointments));
   } catch (err) {
     yield put(waitingAppointmentLoadingError(err));
@@ -93,7 +104,10 @@ export function* getAppointmentsByMembersAndDate() {
   );
 
   try {
-    const appointments = yield call(request, requestURL.toString());
+    const appointments =
+      process.env.NODE_ENV === 'production'
+        ? mockedAppointments
+        : yield call(request, requestURL.toString());
     const appointmentsMembers = displayedMembers.map(member => ({
       memberId: member.id,
       appointments: appointments.filter(
@@ -133,13 +147,17 @@ export function* assignAppointment(action) {
   const requestURL = new URL(POST_ASSIGN_APPOINTMENT_API);
 
   try {
-    const result = yield call(request, requestURL.toString(), {
+    const options = {
       method: 'POST',
       body: JSON.stringify({
         memberId: appointment.memberId,
         appointmentId: appointment.id,
       }),
-    });
+    };
+    const result =
+      process.env.NODE_ENV === 'production'
+        ? mockedAssignAppointment
+        : yield call(request, requestURL.toString(), options);
     if (result) {
       yield put(appointmentAssigned(appointment));
     } else {
