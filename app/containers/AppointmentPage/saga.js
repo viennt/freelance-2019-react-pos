@@ -122,8 +122,8 @@ export function* assignAppointment(action) {
   const displayedMembers = yield select(makeSelectDisplayedMembers());
   const assignedMember = displayedMembers[action.resourceId];
   const appointment = {
-    memberId: assignedMember.id,
     ...action.eventData,
+    memberId: assignedMember.id,
   };
   const requestURL = new URL('appointments', baseUrl);
 
