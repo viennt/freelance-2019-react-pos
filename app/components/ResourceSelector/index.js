@@ -117,7 +117,7 @@ const WaitingHeader = styled.div`
 class ResourceSelector extends React.Component {
   componentWillMount() {
     const { loadMembers } = this.props;
-    loadMembers({ embed: 'appointments' });
+    loadMembers();
   }
 
   onPrevClick(event, previousSlide) {

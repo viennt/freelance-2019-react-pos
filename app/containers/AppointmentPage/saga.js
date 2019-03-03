@@ -12,6 +12,7 @@ import {
   LOAD_APPOINTMENTS_BY_MEMBERS,
   ASSIGN_APPOINTMENT,
   SET_DISPLAYED_MEMBERS,
+  LOAD_WAITING_APPOINTMENT,
 } from './constants';
 import {
   selectDay,
@@ -23,6 +24,8 @@ import {
   appointmentByMemberLoadingError,
   setDisplayedMembers,
   appointmentAssigned,
+  waitingAppointmentsLoaded,
+  waitingAppointmentLoadingError,
 } from './actions';
 import { makeCurrentDay, makeSelectDisplayedMembers } from './selectors';
 
@@ -30,17 +33,9 @@ const baseUrl = 'http://localhost:3000';
 
 /* **************************** API Caller ********************************* */
 
-export function* getMembers(action) {
+export function* getMembers() {
   const requestURL = new URL('members', baseUrl);
-  if (action.page) {
-    requestURL.searchParams.append('_page', action.page);
-  }
-  if (action.limit) {
-    requestURL.searchParams.append('_limit', action.limit);
-  }
-  if (action.embed) {
-    requestURL.searchParams.append('_embed', action.embed);
-  }
+  requestURL.searchParams.append('_embed', 'appointments');
 
   // TODO: Remove this after apply real api
   yield delay(1000);
@@ -61,6 +56,21 @@ export function* getMembers(action) {
     yield put(setDisplayedMembers(members.slice(0, 6)));
   } catch (err) {
     yield put(memberLoadingError(err));
+  }
+}
+
+export function* getWaitingAppointments() {
+  const requestURL = new URL('appointments', baseUrl);
+  requestURL.searchParams.append('status', 'WAITING');
+
+  // TODO: Remove this after apply real api
+  yield delay(1000);
+
+  try {
+    const appointments = yield call(request, requestURL.toString());
+    yield put(waitingAppointmentsLoaded(appointments));
+  } catch (err) {
+    yield put(waitingAppointmentLoadingError(err));
   }
 }
 
@@ -158,6 +168,10 @@ export function* membersData() {
   yield takeLatest(LOAD_MEMBERS, getMembers);
 }
 
+export function* waitingAppointmentsData() {
+  yield takeLatest(LOAD_WAITING_APPOINTMENT, getWaitingAppointments);
+}
+
 export function* appointmentsByMembersData() {
   yield takeLatest(
     LOAD_APPOINTMENTS_BY_MEMBERS,
@@ -181,6 +195,7 @@ export default function* root() {
   yield all([
     fork(selectDayOnCalendar),
     fork(membersData),
+    fork(waitingAppointmentsData),
     fork(displayedMembersData),
     fork(appointmentsByMembersData),
     fork(assignAppointmentData),

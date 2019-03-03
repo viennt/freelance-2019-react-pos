@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import PropTypes from 'prop-types';
 import FCAgenda from './FCAgenda';
 import FCDragZone from './FCDragZone';
 
 import { MAIN_CALENDAR_OPTIONS } from '../../containers/AppointmentPage/constants';
-import { MOCK_WAITING_EVENTS } from '../../containers/AppointmentPage/mockData';
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -48,22 +48,39 @@ SignInWrapper.Button = styled.div`
   cursor: pointer;
 `;
 
-function Calendar() {
-  return (
-    <CalendarWrapper>
-      <MainCalendar>
-        <FCAgenda options={MAIN_CALENDAR_OPTIONS} />
-      </MainCalendar>
-      <RightSideBar>
-        <FCDragZone events={MOCK_WAITING_EVENTS} />
-        <SignInWrapper>
-          <SignInWrapper.Button onClick={() => {}}>
-            Sign in
-          </SignInWrapper.Button>
-        </SignInWrapper>
-      </RightSideBar>
-    </CalendarWrapper>
-  );
+class Calendar extends React.Component {
+  componentWillMount() {
+    const { loadWaitingAppointments } = this.props;
+    loadWaitingAppointments();
+  }
+
+  render() {
+    const { waitingAppointments } = this.props;
+    return (
+      <CalendarWrapper>
+        <MainCalendar>
+          <FCAgenda options={MAIN_CALENDAR_OPTIONS} />
+        </MainCalendar>
+        <RightSideBar>
+          {!!waitingAppointments && !!waitingAppointments.length ? (
+            <FCDragZone events={waitingAppointments} />
+          ) : (
+            'loading'
+          )}
+          <SignInWrapper>
+            <SignInWrapper.Button onClick={() => {}}>
+              Sign in
+            </SignInWrapper.Button>
+          </SignInWrapper>
+        </RightSideBar>
+      </CalendarWrapper>
+    );
+  }
 }
+
+Calendar.propTypes = {
+  waitingAppointments: PropTypes.any,
+  loadWaitingAppointments: PropTypes.func,
+};
 
 export default Calendar;

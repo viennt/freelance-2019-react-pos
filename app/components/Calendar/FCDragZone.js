@@ -26,6 +26,23 @@ const EventWrapper = styled.div`
 // };
 
 class FCDragZone extends React.Component {
+  componentDidMount() {
+    function handleDrag() {
+      const eventInformation = $(this).data('event-information');
+      $(this).data('event', {
+        data: eventInformation,
+        stick: true,
+      });
+
+      $(this).draggable({
+        zIndex: 999,
+        revert: true,
+        revertDuration: 0,
+      });
+    }
+    $('#waiting-events > div').each(handleDrag);
+  }
+
   render() {
     const { events } = this.props;
     return (
@@ -47,28 +64,10 @@ class FCDragZone extends React.Component {
       </DragZoneWrapper>
     );
   }
-
-  componentDidMount() {
-    function handleDrag() {
-      const eventInformation = $(this).data('event-information');
-      $(this).data('event', {
-        data: eventInformation,
-        stick: true,
-      });
-
-      $(this).draggable({
-        zIndex: 999,
-        revert: true,
-        revertDuration: 0,
-      });
-    }
-
-    $('#waiting-events > div').each(handleDrag);
-  }
 }
 
 FCDragZone.propTypes = {
-  events: PropTypes.array,
+  events: PropTypes.any,
 };
 
 export default FCDragZone;

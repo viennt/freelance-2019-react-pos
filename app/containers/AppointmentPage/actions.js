@@ -25,6 +25,9 @@ import {
   LOAD_MEMBERS,
   LOAD_MEMBERS_ERROR,
   LOAD_MEMBERS_SUCCESS,
+  LOAD_WAITING_APPOINTMENT,
+  LOAD_WAITING_APPOINTMENT_ERROR,
+  LOAD_WAITING_APPOINTMENT_SUCCESS,
   SELECT_DAY,
   SELECT_DAY_CALENDAR,
   SELECT_WEEK,
@@ -72,10 +75,9 @@ export function selectDayOnCalendar(day) {
  * @param  {object} options The url options
  * @return {object} An action object with a type of LOAD_MEMBERS
  */
-export function loadMembers(options) {
+export function loadMembers() {
   return {
     type: LOAD_MEMBERS,
-    ...options,
   };
 }
 
@@ -112,6 +114,42 @@ export function setDisplayedMembers(members) {
   return {
     type: SET_DISPLAYED_MEMBERS,
     members,
+  };
+}
+
+/**
+ * Load the waiting appointments, this action starts the request saga
+ * @param  {object} options The url options
+ * @return {object} An action object with a type of LOAD_WAITING_APPOINTMENT
+ */
+export function loadWaitingAppointments(options) {
+  return {
+    type: LOAD_WAITING_APPOINTMENT,
+    ...options,
+  };
+}
+
+/**
+ * Dispatched when the waiting appointments are loaded by the request saga
+ * @param  {array} appointments The appointments data
+ * @return {object}      An action object with a type of LOAD_WAITING_APPOINTMENT_SUCCESS passing the appointments
+ */
+export function waitingAppointmentsLoaded(appointments) {
+  return {
+    type: LOAD_WAITING_APPOINTMENT_SUCCESS,
+    appointments,
+  };
+}
+
+/**
+ * Dispatched when loading the waiting appointments fails
+ * @param  {object} error The error
+ * @return {object}       An action object with a type of LOAD_WAITING_APPOINTMENT_ERROR passing the error
+ */
+export function waitingAppointmentLoadingError(error) {
+  return {
+    type: LOAD_WAITING_APPOINTMENT_ERROR,
+    error,
   };
 }
 

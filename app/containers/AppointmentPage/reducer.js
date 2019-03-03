@@ -23,6 +23,9 @@ import {
   LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
   SET_DISPLAYED_MEMBERS,
   ASSIGN_APPOINTMENT_SUCCESS,
+  LOAD_WAITING_APPOINTMENT,
+  LOAD_WAITING_APPOINTMENT_SUCCESS,
+  LOAD_WAITING_APPOINTMENT_ERROR,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -72,6 +75,7 @@ function appointmentReducer(state = initialState, action) {
           startOfWeek.clone().add(6, 'd'),
         ]),
       );
+
     case LOAD_MEMBERS:
       return state
         .set('loading', true)
@@ -85,12 +89,21 @@ function appointmentReducer(state = initialState, action) {
       return state.set('error', action.error).set('loading', false);
     case SET_DISPLAYED_MEMBERS:
       return state.setIn(['members', 'displayed'], action.members);
+
+    case LOAD_WAITING_APPOINTMENT:
+      return state.setIn(['appointments', 'waiting'], []);
+    case LOAD_WAITING_APPOINTMENT_SUCCESS:
+      return state.setIn(['appointments', 'waiting'], action.appointments);
+    case LOAD_WAITING_APPOINTMENT_ERROR:
+      return state.set('error', action.error);
+
     case LOAD_APPOINTMENTS_BY_MEMBERS:
       return state.setIn(['appointments', 'calendar'], []);
     case LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS:
       return state.setIn(['appointments', 'calendar'], action.appointments);
     case LOAD_APPOINTMENTS_BY_MEMBERS_ERROR:
       return state.set('error', action.error);
+
     case ASSIGN_APPOINTMENT_SUCCESS:
       return state.updateIn(['appointments', 'calendar'], arr => {
         const assignedMember = arr.find(

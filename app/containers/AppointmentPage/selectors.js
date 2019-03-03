@@ -37,6 +37,11 @@ const makeSelectDisplayedMembers = () =>
     appointmentState.getIn(['members', 'displayed']),
   );
 
+const makeSelectWaitingAppointments = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.getIn(['appointments', 'waiting']),
+  );
+
 export {
   currentAppointment,
   makeCurrentDay,
@@ -45,4 +50,5 @@ export {
   makeSelectError,
   makeSelectMembers,
   makeSelectDisplayedMembers,
+  makeSelectWaitingAppointments,
 };
