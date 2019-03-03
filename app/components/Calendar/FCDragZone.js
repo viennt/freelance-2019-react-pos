@@ -5,7 +5,8 @@ import $ from 'jquery';
 import 'jquery-ui';
 
 const DragZoneWrapper = styled.div`
-  //
+  height: calc(100vh - 4rem - 4rem - 4rem);
+  //overflow: hidden;
 `;
 
 const EventWrapper = styled.div`
@@ -13,6 +14,16 @@ const EventWrapper = styled.div`
   border: 1px solid #ffffff;
   color: #333333;
 `;
+
+// const chunk = (array, size) => {
+//   const chunkedArr = [];
+//   let index = 0;
+//   while (index < array.length) {
+//     chunkedArr.push(array.slice(index, size + index));
+//     index += size;
+//   }
+//   return chunkedArr;
+// };
 
 class FCDragZone extends React.Component {
   render() {

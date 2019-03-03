@@ -24,6 +24,28 @@ const MainCalendar = styled.div`
 const RightSideBar = styled.div`
   width: calc((100vw - 5.05rem) / 7);
   border-top: 2px solid #3883bb;
+  position: relative;
+`;
+
+const SignInWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: calc((100vw - 5.05rem) / 7);
+  background: #fafafa;
+  height: 4rem;
+  text-align: center;
+  padding: 0.5rem;
+`;
+
+SignInWrapper.Button = styled.div`
+  border-radius: 4px;
+  background: #0071c5;
+  color: #ffffff;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 2.8;
+  height: 100%;
+  cursor: pointer;
 `;
 
 function Calendar() {
@@ -34,6 +56,11 @@ function Calendar() {
       </MainCalendar>
       <RightSideBar>
         <FCDragZone events={MOCK_WAITING_EVENTS} />
+        <SignInWrapper>
+          <SignInWrapper.Button onClick={() => {}}>
+            Sign in
+          </SignInWrapper.Button>
+        </SignInWrapper>
       </RightSideBar>
     </CalendarWrapper>
   );
