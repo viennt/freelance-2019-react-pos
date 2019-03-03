@@ -29,12 +29,17 @@ import {
 } from './actions';
 import { makeCurrentDay, makeSelectDisplayedMembers } from './selectors';
 
-const baseUrl = 'http://localhost:3000';
+import {
+  GET_APPOINTMENTS_BY_MEMBERS_DATE_API,
+  GET_MEMBERS_API,
+  GET_WAITING_APPOINTMENTS_API,
+  POST_ASSIGN_APPOINTMENT_API,
+} from '../../../app-constants';
 
 /* **************************** API Caller ********************************* */
 
 export function* getMembers() {
-  const requestURL = new URL('members', baseUrl);
+  const requestURL = new URL(GET_MEMBERS_API);
   requestURL.searchParams.append('_embed', 'appointments');
 
   // TODO: Remove this after apply real api
@@ -60,7 +65,7 @@ export function* getMembers() {
 }
 
 export function* getWaitingAppointments() {
-  const requestURL = new URL('appointments', baseUrl);
+  const requestURL = new URL(GET_WAITING_APPOINTMENTS_API);
   requestURL.searchParams.append('status', 'WAITING');
 
   // TODO: Remove this after apply real api
@@ -78,7 +83,7 @@ export function* getAppointmentsByMembersAndDate() {
   const displayedMembers = yield select(makeSelectDisplayedMembers());
   const currentDate = yield select(makeCurrentDay());
 
-  const requestURL = new URL('appointments', baseUrl);
+  const requestURL = new URL(GET_APPOINTMENTS_BY_MEMBERS_DATE_API);
   displayedMembers.forEach(member => {
     requestURL.searchParams.append('memberId', member.id);
   });
@@ -125,7 +130,7 @@ export function* assignAppointment(action) {
     ...action.eventData,
     memberId: assignedMember.id,
   };
-  const requestURL = new URL('appointments', baseUrl);
+  const requestURL = new URL(POST_ASSIGN_APPOINTMENT_API);
 
   try {
     const result = yield call(request, requestURL.toString(), {

@@ -12,11 +12,7 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 
 import AppointmentPage from 'containers/AppointmentPage/Loadable';
-import MarketingPage from 'containers/MarketingPage/Loadable';
-import CheckoutPage from 'containers/CheckoutPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-// import Header from 'components/Header';
-// import Footer from 'components/Footer';
 
 import GlobalStyle from '../../global-styles';
 
@@ -34,14 +30,11 @@ export default function App() {
   return (
     <AppWrapper>
       <Helmet titleTemplate="%s - React App" defaultTitle="Appointment App">
-        <meta name="description" content="A React.js Boilerplate application" />
+        <meta name="description" content="React App" />
       </Helmet>
       {/* <Header /> */}
       <Switch>
         <Route exact path="/" component={AppointmentPage} />
-        <Route path="/marketing" component={MarketingPage} />
-        <Route path="/appointment" component={AppointmentPage} />
-        <Route path="/checkout" component={CheckoutPage} />
         <Route path="" component={NotFoundPage} />
       </Switch>
       {/* <Footer /> */}

@@ -26,6 +26,6 @@ https://github.com/react-boilerplate/react-boilerplate/issues?q=is%3Aissue+is%3A
 
 # Versions
 
-- React-Boilerplate (see `package.json`):
+- React (see `package.json`):
 - Node/NPM:
 - Browser:

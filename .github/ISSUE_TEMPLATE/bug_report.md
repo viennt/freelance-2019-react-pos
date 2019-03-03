@@ -22,6 +22,6 @@ If applicable, add screenshots to help explain your problem.
 
 ## Versions
 
-- React-Boilerplate:
+- React-App:
 - Node/NPM:
 - Browser:
