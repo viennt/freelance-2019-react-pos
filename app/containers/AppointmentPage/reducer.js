@@ -12,7 +12,13 @@
 import moment from 'moment';
 import { fromJS } from 'immutable';
 
-import { SELECT_DAY, SELECT_WEEK } from './constants';
+import {
+  SELECT_DAY,
+  SELECT_WEEK,
+  LOAD_MEMBERS,
+  LOAD_MEMBERS_ERROR,
+  LOAD_MEMBERS_SUCCESS,
+} from './constants';
 
 const initialCurrentDay = moment();
 const firstDayOfWeek = initialCurrentDay.clone().startOf('isoWeek');
@@ -28,17 +34,26 @@ const initialWeekDays = [
 
 // The initial state of the App
 export const initialState = fromJS({
+  loading: false,
+  error: false,
   currentDay: initialCurrentDay,
   currentWeekDays: initialWeekDays,
+  members: {
+    all: [],
+    displayed: [],
+  },
+  appointments: {
+    waiting: [],
+  },
 });
 
 function appointmentReducer(state = initialState, action) {
   let startOfWeek;
   switch (action.type) {
     case SELECT_DAY:
-      return state.set('currentDay', moment(action.day, 'YYYY-MM-DD'));
+      return state.set('currentDay', moment(action.day, 'DDMMYYYY'));
     case SELECT_WEEK:
-      startOfWeek = moment(action.dayOfWeek, 'YYYY-MM-DD').startOf('isoWeek');
+      startOfWeek = moment(action.dayOfWeek, 'DDMMYYYY').startOf('isoWeek');
       return state.set(
         'currentWeekDays',
         fromJS([
@@ -51,6 +66,17 @@ function appointmentReducer(state = initialState, action) {
           startOfWeek.clone().add(6, 'd'),
         ]),
       );
+    case LOAD_MEMBERS:
+      return state
+        .set('loading', true)
+        .set('error', false)
+        .setIn(['members', 'all'], []);
+    case LOAD_MEMBERS_SUCCESS:
+      return state
+        .setIn(['members', 'all'], action.members)
+        .set('loading', false);
+    case LOAD_MEMBERS_ERROR:
+      return state.set('error', action.error).set('loading', false);
     default:
       return state;
   }

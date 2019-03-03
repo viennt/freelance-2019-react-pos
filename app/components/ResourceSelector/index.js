@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import Carousel from 'nuka-carousel';
 import { FaCaretLeft, FaCaretRight } from 'react-icons/fa';
 
+import LoadingIndicator from 'components/LoadingIndicator';
+
 const ResourceSelectorWrapper = styled.div`
   width: 100%;
   height: 4rem;
@@ -65,7 +67,7 @@ Resource.OrderNumber = styled.div`
   position: absolute;
   top: 2px;
   right: 2px;
-  background: #3883bb;
+  background: ${props => (props.notEmpty ? '#3883bb' : '#ff1b22')};
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -113,26 +115,26 @@ const WaitingHeader = styled.div`
 `;
 
 class ResourceSelector extends React.Component {
+  componentWillMount() {
+    const { loadMembers } = this.props;
+    loadMembers({ embed: 'appointments' });
+  }
+
   onPrevClick(event, previousSlide) {
     previousSlide(event);
-    // const { days, onChangeWeek } = this.props;
-    // onChangeWeek(days[0].subtract(1, 'w').format('YYYY-MM-DD'));
   }
 
   onNextClick(event, nextSlide) {
     nextSlide(event);
-    // const { days, onChangeWeek } = this.props;
-    // onChangeWeek(days[0].add(1, 'w').format('YYYY-MM-DD'));
   }
 
-  // onDayClick(day) {
-  // const { onChangeToday } = this.props;
-  // onChangeToday(day.format('YYYY-MM-DD'));
+  // afterSlide(index) {
+  //   const { resources } = this.props;
   // }
 
   onTodayClick() {
     const { onChangeToday } = this.props;
-    onChangeToday(moment().format('YYYY-MM-DD'));
+    onChangeToday(moment().format('DDMMYYYY'));
   }
 
   renderResource(resource) {
@@ -141,18 +143,17 @@ class ResourceSelector extends React.Component {
         <Resource.Avatar>
           <img src={resource.imageUrl} alt={resource.orderNumber} />
         </Resource.Avatar>
-        <Resource.OrderNumber className="app-resource__order-number">
+        <Resource.OrderNumber
+          notEmpty={resource.appointments && resource.appointments.length}
+        >
           {resource.orderNumber}
         </Resource.OrderNumber>
-        <Resource.Title className="app-resource__title">
-          {resource.title}
-        </Resource.Title>
+        <Resource.Title>{resource.title}</Resource.Title>
       </>
     );
   }
 
   renderResources(resource, index) {
-    // const { selectedResource } = this.props;
     return (
       <ResourceWrapper key={index}>
         <Resource onClick={() => this.onDayClick()}>
@@ -162,8 +163,29 @@ class ResourceSelector extends React.Component {
     );
   }
 
+  renderLoadingResources(index) {
+    return (
+      <ResourceWrapper key={index}>
+        <Resource>
+          <LoadingIndicator />
+        </Resource>
+      </ResourceWrapper>
+    );
+  }
+
+  renderCarouselSlide() {
+    const { loading, resources } = this.props;
+    if (loading) {
+      return [1, 2, 3, 4, 5, 6].map(index =>
+        this.renderLoadingResources(index),
+      );
+    }
+    return resources.map((resource, index) =>
+      this.renderResources(resource, index),
+    );
+  }
+
   render() {
-    const { resources } = this.props;
     return (
       <ResourceSelectorWrapper>
         <TodayWrapper>
@@ -186,10 +208,9 @@ class ResourceSelector extends React.Component {
                 <FaCaretRight />
               </NextButton>
             )}
+            afterSlide={slideIndex => this.afterSlide(slideIndex)}
           >
-            {resources.map((resource, index) =>
-              this.renderResources(resource, index),
-            )}
+            {this.renderCarouselSlide()}
           </Carousel>
         </ResourceSliderWrapper>
         <WaitingHeader>Waiting</WaitingHeader>
@@ -199,8 +220,10 @@ class ResourceSelector extends React.Component {
 }
 
 ResourceSelector.propTypes = {
-  resources: PropTypes.array,
+  resources: PropTypes.any,
   onChangeToday: PropTypes.func,
+  loadMembers: PropTypes.func,
+  loading: PropTypes.bool,
 };
 
 export default ResourceSelector;

@@ -12,7 +12,7 @@ const CalendarWrapper = styled.div`
   border-left: 2px solid #3883bb;
   border-right: 2px solid #3883bb;
   border-bottom: 2px solid #3883bb;
-  height: calc(100% - 3rem - 4rem - 4rem);
+  height: calc(100% - 4rem - 4rem);
   overflow: hidden;
 `;
 

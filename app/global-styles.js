@@ -98,6 +98,24 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1.2;
     font-style: italic;
   }
+
+  .timeline {
+    position: absolute;    
+    border-top: 2px dashed red;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    z-index: 999;
+  }
+
+  @keyframes placeHolderShimmer {
+    0% {
+      background-position: -468px 0
+    }
+    100% {
+      background-position: 468px 0
+    }
+  }
 `;
 
 export default GlobalStyle;

@@ -15,12 +15,19 @@
  *    }
  */
 
-import { SELECT_DAY, SELECT_DAY_CALENDAR, SELECT_WEEK } from './constants';
+import {
+  LOAD_MEMBERS,
+  LOAD_MEMBERS_ERROR,
+  LOAD_MEMBERS_SUCCESS,
+  SELECT_DAY,
+  SELECT_DAY_CALENDAR,
+  SELECT_WEEK,
+} from './constants';
 
 /**
  * Select day on mini calendar or day slider
  *
- * @param  {string} day The string with format YYYY-MM-DD
+ * @param  {string} day The string with format DDMMYYYY
  *
  * @return {object}    An action object with a type of SELECT_DAY
  */
@@ -34,7 +41,7 @@ export function selectDay(day) {
 /**
  * Select week on day slider
  *
- * @param  {string} dayOfWeek The string with format YYYY-MM-DD
+ * @param  {string} dayOfWeek The string with format DDMMYYYY
  *
  * @return {object}    An action object with a type of SELECT_DAY
  */
@@ -48,7 +55,7 @@ export function selectWeek(dayOfWeek) {
 /**
  * Select day on mini calendar
  *
- * @param  {string} day The string with format YYYY-MM-DD
+ * @param  {string} day The string with format DDMMYYYY
  *
  * @return {object}    An action object with a type of SELECT_DAY
  */
@@ -56,5 +63,47 @@ export function selectDayOnCalendar(day) {
   return {
     type: SELECT_DAY_CALENDAR,
     day,
+  };
+}
+
+/**
+ * Load the members, this action starts the request saga
+ *
+ * @param  {object} options The url options
+ *
+ * @return {object} An action object with a type of LOAD_MEMBERS
+ */
+export function loadMembers(options) {
+  return {
+    type: LOAD_MEMBERS,
+    ...options,
+  };
+}
+
+/**
+ * Dispatched when the members are loaded by the request saga
+ *
+ * @param  {array} members The members data
+ *
+ * @return {object}      An action object with a type of LOAD_MEMBERS_SUCCESS passing the members
+ */
+export function membersLoaded(members) {
+  return {
+    type: LOAD_MEMBERS_SUCCESS,
+    members,
+  };
+}
+
+/**
+ * Dispatched when loading the members fails
+ *
+ * @param  {object} error The error
+ *
+ * @return {object}       An action object with a type of LOAD_MEMBERS_ERROR passing the error
+ */
+export function memberLoadingError(error) {
+  return {
+    type: LOAD_MEMBERS_ERROR,
+    error,
   };
 }

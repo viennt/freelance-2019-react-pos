@@ -1,23 +1,15 @@
 import $ from 'jquery';
-import { MOCK_EVENTS, MOCK_RESOURCES } from './mockData';
+import moment from 'moment';
 
 export const EVENT_RENDER_TEMPLATE = event => `
   <div class="app-event">
-    <div class="app-event__id-number">#${event.idNumber}</div>
+    <div class="app-event__id-number">#${event.id}</div>
     <div class="app-event__full-name">${event.userFullName}</div>
     <div class="app-event__phone-number">${event.phoneNumber}</div>
     <div class="app-event__option">- ${event.option1}</div>
     <div class="app-event__option">- ${event.option2}</div>
     <div class="app-event__option">- ${event.option3}</div>
   </div>
-`;
-
-export const RESOURCE_RENDER_TEMPLATE = resource => `
-  <div class="app-resource__avatar">
-    <img src="${resource.imageUrl}" alt="${resource.orderNumber}">
-  </div>
-  <div class="app-resource__order-number">${resource.orderNumber}</div>
-  <div class="app-resource__title">${resource.title}</div>
 `;
 
 export const MAIN_CALENDAR_OPTIONS = {
@@ -35,11 +27,25 @@ export const MAIN_CALENDAR_OPTIONS = {
   defaultTimedEventDuration: '01:30:00',
   minTime: '06:00:00',
   maxTime: '23:00:00',
-  resources: MOCK_RESOURCES,
-  events: MOCK_EVENTS,
+  timezone: 'local',
+  resources: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
   schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-  drop() {
-    $(this).remove();
+  drop(date) {
+    if (date.isBefore(moment())) {
+      // Remove added event out of calendar
+      $('#full-calendar').fullCalendar(
+        'removeEvents',
+        event => event.data.id === $(this).data().event.data.id,
+      );
+    } else {
+      // Remove added event from waiting list
+      $(this).remove();
+    }
+  },
+  eventDrop: (event, delta, revertFunc) => {
+    if (event.start.isBefore(moment())) {
+      revertFunc();
+    }
   },
   /* eslint no-param-reassign: "error" */
   eventRender: (event, element) => {
@@ -62,7 +68,14 @@ export const MAIN_CALENDAR_OPTIONS = {
  */
 
 export const SELECT_DAY = 'app/Appointment/SELECT_DAY';
-
 export const SELECT_WEEK = 'app/Appointment/SELECT_WEEK';
-
 export const SELECT_DAY_CALENDAR = 'app/Appointment/SELECT_DAY_CALENDAR';
+
+export const LOAD_MEMBERS = 'boilerplate/App/LOAD_MEMBERS';
+export const LOAD_MEMBERS_SUCCESS = 'boilerplate/App/LOAD_MEMBERS_SUCCESS';
+export const LOAD_MEMBERS_ERROR = 'boilerplate/App/LOAD_MEMBERS_ERROR';
+
+export const LOAD_APPOINTMENT = 'boilerplate/App/LOAD_APPOINTMENT';
+export const LOAD_APPOINTMENT_SUCCESS =
+  'boilerplate/App/LOAD_APPOINTMENT_SUCCESS';
+export const LOAD_APPOINTMENT_ERROR = 'boilerplate/App/LOAD_APPOINTMENT_ERROR';

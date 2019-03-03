@@ -19,9 +19,16 @@ const NormalDay = styled.div`
   border-right: 1px solid #3883bb;
   text-align: center;
   padding: 0.5rem;
+  overflow: hidden;
 
   &:last-child {
     border-right: none;
+  }
+
+  & div {
+    white-space: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 `;
 
@@ -53,18 +60,18 @@ class DaySlider extends React.Component {
   onPrevClick(event, previousSlide) {
     previousSlide(event);
     const { days, onChangeWeek } = this.props;
-    onChangeWeek(days[0].subtract(1, 'w').format('YYYY-MM-DD'));
+    onChangeWeek(days[0].subtract(1, 'w').format('DDMMYYYY'));
   }
 
   onNextClick(event, nextSlide) {
     nextSlide(event);
     const { days, onChangeWeek } = this.props;
-    onChangeWeek(days[0].add(1, 'w').format('YYYY-MM-DD'));
+    onChangeWeek(days[0].add(1, 'w').format('DDMMYYYY'));
   }
 
   onDayClick(day) {
     const { onChangeDay } = this.props;
-    onChangeDay(day.format('YYYY-MM-DD'));
+    onChangeDay(day.format('DDMMYYYY'));
   }
 
   renderDay(day) {

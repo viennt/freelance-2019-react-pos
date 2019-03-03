@@ -1,22 +1,28 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
 
 import ResourceSelector from 'components/ResourceSelector';
 
-import { selectDayOnCalendar } from './actions';
-import { MOCK_RESOURCES_HEADER } from './mockData';
+import {
+  makeSelectLoading,
+  makeSelectError,
+  makeSelectMembers,
+} from './selectors';
+import { selectDayOnCalendar, loadMembers } from './actions';
 
 export function mapDispatchToProps(dispatch) {
   return {
     onChangeToday: day => dispatch(selectDayOnCalendar(day)),
+    loadMembers: options => dispatch(loadMembers(options)),
   };
 }
 
-export function mapStateToProps() {
-  return {
-    resources: MOCK_RESOURCES_HEADER,
-  };
-}
+const mapStateToProps = createStructuredSelector({
+  loading: makeSelectLoading(),
+  error: makeSelectError(),
+  resources: makeSelectMembers(),
+});
 
 const withConnect = connect(
   mapStateToProps,

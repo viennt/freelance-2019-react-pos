@@ -77,7 +77,7 @@ class MiniCalendar extends React.Component {
 
   onDaySelected(day) {
     const { onChangeDay } = this.props;
-    onChangeDay(moment(new Date(day)).format('YYYY-MM-DD'));
+    onChangeDay(moment(new Date(day)).format('DDMMYYYY'));
   }
 
   renderPopup() {

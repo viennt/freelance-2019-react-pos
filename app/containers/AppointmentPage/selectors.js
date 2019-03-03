@@ -17,4 +17,32 @@ const makeCurrentDay = () =>
     appointmentState.get('currentDay'),
   );
 
-export { currentAppointment, makeCurrentDay, makeCurrentWeekDays };
+const makeSelectLoading = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.get('loading'),
+  );
+
+const makeSelectError = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.get('error'),
+  );
+
+const makeSelectMembers = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.getIn(['members', 'all']),
+  );
+
+const makeSelectActiveMembers = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.getIn(['members', 'active']),
+  );
+
+export {
+  currentAppointment,
+  makeCurrentDay,
+  makeCurrentWeekDays,
+  makeSelectLoading,
+  makeSelectError,
+  makeSelectMembers,
+  makeSelectActiveMembers,
+};

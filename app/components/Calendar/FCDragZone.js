@@ -22,10 +22,10 @@ class FCDragZone extends React.Component {
         {events.map(event => (
           <EventWrapper
             className="app-event"
-            key={event.idNumber}
+            key={event.id}
             data-event-information={JSON.stringify(event)}
           >
-            <div className="app-event__id-number">#{event.idNumber}</div>
+            <div className="app-event__id-number">#{event.id}</div>
             <div className="app-event__full-name">{event.userFullName}</div>
             <div className="app-event__phone-number">{event.phoneNumber}</div>
             <div className="app-event__option">- {event.option1}</div>
