@@ -1,6 +1,9 @@
 import $ from 'jquery';
 import moment from 'moment';
 
+import { store } from 'app';
+import { assignAppointment } from './actions';
+
 export const EVENT_RENDER_TEMPLATE = event => `
   <div class="app-event">
     <div class="app-event__id-number">#${event.id}</div>
@@ -30,8 +33,17 @@ export const MAIN_CALENDAR_OPTIONS = {
   timezone: 'local',
   resources: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
   schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-  drop(date) {
-    if (date.isBefore(moment())) {
+  drop(date, jsEvent, ui, resourceId) {
+    const displayedMembers = store
+      .getState()
+      .getIn(['appointment', 'appointments', 'calendar']);
+    const isOverride = displayedMembers[resourceId].appointments.findIndex(
+      appointment => {
+        const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
+        return date.diff(appTime, 'minute') < 90;
+      },
+    );
+    if (isOverride >= 0 || date.isBefore(moment())) {
       // Remove added event out of calendar
       $('#full-calendar').fullCalendar(
         'removeEvents',
@@ -39,11 +51,34 @@ export const MAIN_CALENDAR_OPTIONS = {
       );
     } else {
       // Remove added event from waiting list
+      const event = $(this).data().event.data;
       $(this).remove();
+      store.dispatch(
+        assignAppointment({
+          eventData: {
+            ...event,
+            status: 'ASSIGNED',
+            start: date.format('YYYY-MM-DDTHH:mm:ss'),
+          },
+          resourceId,
+        }),
+      );
     }
   },
   eventDrop: (event, delta, revertFunc) => {
-    if (event.start.isBefore(moment())) {
+    const displayedMembers = store
+      .getState()
+      .getIn(['appointment', 'appointments', 'calendar']);
+    const override = displayedMembers[event.resourceId].appointments.find(
+      appointment => {
+        const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
+        return event.start.diff(appTime, 'minute') < 90;
+      },
+    );
+    if (
+      (!!override && override.id !== event.data.id) ||
+      event.start.isBefore(moment())
+    ) {
       revertFunc();
     }
   },
@@ -82,3 +117,9 @@ export const LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS =
   'boilerplate/App/LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS';
 export const LOAD_APPOINTMENTS_BY_MEMBERS_ERROR =
   'boilerplate/App/LOAD_APPOINTMENTS_BY_MEMBERS_ERROR';
+
+export const ASSIGN_APPOINTMENT = 'boilerplate/App/ASSIGN_APPOINTMENT';
+export const ASSIGN_APPOINTMENT_SUCCESS =
+  'boilerplate/App/ASSIGN_APPOINTMENT_SUCCESS';
+export const ASSIGN_APPOINTMENT_ERROR =
+  'boilerplate/App/ASSIGN_APPOINTMENT_ERROR';

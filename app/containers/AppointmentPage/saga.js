@@ -1,19 +1,17 @@
-/**
- * Gets the membersitories of the user from Github
- */
-
 import { delay } from 'redux-saga';
 import { call, fork, put, takeLatest, all, select } from 'redux-saga/effects';
 import $ from 'jquery';
 import moment from 'moment';
 
 import request from 'utils/request';
+
 import {
+  SELECT_DAY,
   SELECT_DAY_CALENDAR,
   LOAD_MEMBERS,
   LOAD_APPOINTMENTS_BY_MEMBERS,
+  ASSIGN_APPOINTMENT,
   SET_DISPLAYED_MEMBERS,
-  SELECT_DAY,
 } from './constants';
 import {
   selectDay,
@@ -24,15 +22,13 @@ import {
   appointmentByMembersLoaded,
   appointmentByMemberLoadingError,
   setDisplayedMembers,
+  appointmentAssigned,
 } from './actions';
 import { makeCurrentDay, makeSelectDisplayedMembers } from './selectors';
 
 const baseUrl = 'http://localhost:3000';
 
-export function* selectDayAndWeek(action) {
-  yield put(selectDay(action.day));
-  yield put(selectWeek(action.day));
-}
+/* **************************** API Caller ********************************* */
 
 export function* getMembers(action) {
   const requestURL = new URL('members', baseUrl);
@@ -46,6 +42,7 @@ export function* getMembers(action) {
     requestURL.searchParams.append('_embed', action.embed);
   }
 
+  // TODO: Remove this after apply real api
   yield delay(1000);
 
   try {
@@ -67,16 +64,9 @@ export function* getMembers(action) {
   }
 }
 
-export function* getDisplayedMembers() {
-  yield put(loadAppointmentByMembers());
-}
-
 export function* getAppointmentsByMembersAndDate() {
   const displayedMembers = yield select(makeSelectDisplayedMembers());
   const currentDate = yield select(makeCurrentDay());
-
-  $('#full-calendar').fullCalendar('gotoDate', currentDate);
-  $('#full-calendar').fullCalendar('removeEvents');
 
   const requestURL = new URL('appointments', baseUrl);
   displayedMembers.forEach(member => {
@@ -96,6 +86,12 @@ export function* getAppointmentsByMembersAndDate() {
       ),
     }));
     yield put(appointmentByMembersLoaded(appointmentsMembers));
+
+    // ******************** //
+    // UPDATE MAIN CALENDAR
+    // ******************** //
+    $('#full-calendar').fullCalendar('gotoDate', currentDate);
+    $('#full-calendar').fullCalendar('removeEvents');
     const events = [];
     appointmentsMembers.forEach((member, index) => {
       member.appointments.forEach(appointment => {
@@ -111,6 +107,48 @@ export function* getAppointmentsByMembersAndDate() {
     yield put(appointmentByMemberLoadingError(err));
   }
 }
+
+export function* assignAppointment(action) {
+  const displayedMembers = yield select(makeSelectDisplayedMembers());
+  const assignedMember = displayedMembers[action.resourceId];
+  const appointment = {
+    memberId: assignedMember.id,
+    ...action.eventData,
+  };
+  const requestURL = new URL('appointments', baseUrl);
+
+  try {
+    const result = yield call(request, requestURL.toString(), {
+      method: 'POST',
+      body: JSON.stringify({
+        memberId: appointment.memberId,
+        appointmentId: appointment.id,
+      }),
+    });
+    if (result) {
+      yield put(appointmentAssigned(appointment));
+    } else {
+      yield put(memberLoadingError(result));
+    }
+  } catch (err) {
+    yield put(memberLoadingError(err));
+  }
+}
+
+/* **************************** Subroutines ******************************** */
+
+export function* selectDayAndWeek(action) {
+  yield put(selectDay(action.day));
+  yield put(selectWeek(action.day));
+}
+
+export function* getDisplayedMembers() {
+  yield put(loadAppointmentByMembers());
+}
+
+/* ************************************************************************* */
+/* ****************************** WATCHERS ********************************* */
+/* ************************************************************************* */
 
 export function* selectDayOnCalendar() {
   yield takeLatest(SELECT_DAY_CALENDAR, selectDayAndWeek);
@@ -132,6 +170,10 @@ export function* displayedMembersData() {
   yield takeLatest(SET_DISPLAYED_MEMBERS, getDisplayedMembers);
 }
 
+export function* assignAppointmentData() {
+  yield takeLatest(ASSIGN_APPOINTMENT, assignAppointment);
+}
+
 /**
  * Root saga manages watcher lifecycle
  */
@@ -141,5 +183,6 @@ export default function* root() {
     fork(membersData),
     fork(displayedMembersData),
     fork(appointmentsByMembersData),
+    fork(assignAppointmentData),
   ]);
 }

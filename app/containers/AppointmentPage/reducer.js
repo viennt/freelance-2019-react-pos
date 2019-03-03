@@ -22,6 +22,7 @@ import {
   LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS,
   LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
   SET_DISPLAYED_MEMBERS,
+  ASSIGN_APPOINTMENT_SUCCESS,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -90,6 +91,14 @@ function appointmentReducer(state = initialState, action) {
       return state.setIn(['appointments', 'calendar'], action.appointments);
     case LOAD_APPOINTMENTS_BY_MEMBERS_ERROR:
       return state.set('error', action.error);
+    case ASSIGN_APPOINTMENT_SUCCESS:
+      return state.updateIn(['appointments', 'calendar'], arr => {
+        const assignedMember = arr.find(
+          member => member.memberId === action.appointment.memberId,
+        );
+        assignedMember.appointments.push(action.appointment);
+        return arr;
+      });
     default:
       return state;
   }

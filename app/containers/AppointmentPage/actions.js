@@ -16,6 +16,9 @@
  */
 
 import {
+  ASSIGN_APPOINTMENT,
+  ASSIGN_APPOINTMENT_ERROR,
+  ASSIGN_APPOINTMENT_SUCCESS,
   LOAD_APPOINTMENTS_BY_MEMBERS,
   LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
   LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS,
@@ -143,6 +146,42 @@ export function appointmentByMembersLoaded(appointments) {
 export function appointmentByMemberLoadingError(error) {
   return {
     type: LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
+    error,
+  };
+}
+
+/**
+ * Assign appointment to member, this action starts the request saga
+ * @param  {object} options The url options
+ * @return {object} An action object with a type of ASSIGN_APPOINTMENT
+ */
+export function assignAppointment(options) {
+  return {
+    type: ASSIGN_APPOINTMENT,
+    ...options,
+  };
+}
+
+/**
+ * Dispatched when assign appointment to member by the request saga
+ * @param  {object} appointment
+ * @return {object}      An action object with a type of ASSIGN_APPOINTMENT_SUCCESS passing the members
+ */
+export function appointmentAssigned(appointment) {
+  return {
+    type: ASSIGN_APPOINTMENT_SUCCESS,
+    appointment,
+  };
+}
+
+/**
+ * Dispatched when loading assign appointment to member fails
+ * @param  {object} error The error
+ * @return {object}       An action object with a type of ASSIGN_APPOINTMENT_ERROR passing the error
+ */
+export function appointmentAssigningError(error) {
+  return {
+    type: ASSIGN_APPOINTMENT_ERROR,
     error,
   };
 }
