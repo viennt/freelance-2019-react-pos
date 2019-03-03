@@ -129,10 +129,8 @@ class ResourceSelector extends React.Component {
   }
 
   afterSlide(index) {
-    const { resources, loadAppointmentByMembers } = this.props;
-    loadAppointmentByMembers({
-      memberIds: resources.slice(index, index + 6).map(resource => resource.id),
-    });
+    const { resources, setDisplayedMembers } = this.props;
+    setDisplayedMembers(resources.slice(index, index + 6));
   }
 
   onTodayClick() {
@@ -157,9 +155,7 @@ class ResourceSelector extends React.Component {
   renderResources(resource, index) {
     return (
       <ResourceWrapper key={index}>
-        <Resource onClick={() => this.onDayClick()}>
-          {this.renderResource(resource)}
-        </Resource>
+        <Resource>{this.renderResource(resource)}</Resource>
       </ResourceWrapper>
     );
   }
@@ -224,7 +220,7 @@ ResourceSelector.propTypes = {
   resources: PropTypes.any,
   onChangeToday: PropTypes.func,
   loadMembers: PropTypes.func,
-  loadAppointmentByMembers: PropTypes.func,
+  setDisplayedMembers: PropTypes.func,
   loading: PropTypes.bool,
 };
 

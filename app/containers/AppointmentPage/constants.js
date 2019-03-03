@@ -74,6 +74,7 @@ export const SELECT_DAY_CALENDAR = 'app/Appointment/SELECT_DAY_CALENDAR';
 export const LOAD_MEMBERS = 'boilerplate/App/LOAD_MEMBERS';
 export const LOAD_MEMBERS_SUCCESS = 'boilerplate/App/LOAD_MEMBERS_SUCCESS';
 export const LOAD_MEMBERS_ERROR = 'boilerplate/App/LOAD_MEMBERS_ERROR';
+export const SET_DISPLAYED_MEMBERS = 'boilerplate/App/SET_DISPLAYED_MEMBERS';
 
 export const LOAD_APPOINTMENTS_BY_MEMBERS =
   'boilerplate/App/LOAD_APPOINTMENTS_BY_MEMBERS';

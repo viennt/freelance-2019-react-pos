@@ -25,6 +25,7 @@ import {
   SELECT_DAY,
   SELECT_DAY_CALENDAR,
   SELECT_WEEK,
+  SET_DISPLAYED_MEMBERS,
 } from './constants';
 
 /**
@@ -100,14 +101,25 @@ export function memberLoadingError(error) {
 }
 
 /**
+ * Load the members, this action starts the request saga
+ * @param  {object} members The url options
+ * @return {object} An action object with a type of LOAD_MEMBERS
+ */
+export function setDisplayedMembers(members) {
+  return {
+    type: SET_DISPLAYED_MEMBERS,
+    members,
+  };
+}
+
+/**
  * Load the appointment by members, this action starts the request saga
- * @param  {object} options The url options
+ // * @param  {object} options The url options
  * @return {object} An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS
  */
-export function loadAppointmentByMembers(options) {
+export function loadAppointmentByMembers() {
   return {
     type: LOAD_APPOINTMENTS_BY_MEMBERS,
-    ...options,
   };
 }
 

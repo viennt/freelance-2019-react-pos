@@ -12,15 +12,14 @@ import {
 import {
   selectDayOnCalendar,
   loadMembers,
-  loadAppointmentByMembers,
+  setDisplayedMembers,
 } from './actions';
 
 export function mapDispatchToProps(dispatch) {
   return {
     onChangeToday: day => dispatch(selectDayOnCalendar(day)),
     loadMembers: options => dispatch(loadMembers(options)),
-    loadAppointmentByMembers: options =>
-      dispatch(loadAppointmentByMembers(options)),
+    setDisplayedMembers: members => dispatch(setDisplayedMembers(members)),
   };
 }
 

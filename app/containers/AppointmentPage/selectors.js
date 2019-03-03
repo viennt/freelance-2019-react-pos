@@ -32,9 +32,9 @@ const makeSelectMembers = () =>
     appointmentState.getIn(['members', 'all']),
   );
 
-const makeSelectActiveMembers = () =>
+const makeSelectDisplayedMembers = () =>
   createSelector(currentAppointment, appointmentState =>
-    appointmentState.getIn(['members', 'active']),
+    appointmentState.getIn(['members', 'displayed']),
   );
 
 export {
@@ -44,5 +44,5 @@ export {
   makeSelectLoading,
   makeSelectError,
   makeSelectMembers,
-  makeSelectActiveMembers,
+  makeSelectDisplayedMembers,
 };

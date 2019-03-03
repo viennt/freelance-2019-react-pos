@@ -3,7 +3,7 @@
  */
 
 import { delay } from 'redux-saga';
-import { call, fork, put, takeLatest, all } from 'redux-saga/effects';
+import { call, fork, put, takeLatest, all, select } from 'redux-saga/effects';
 import $ from 'jquery';
 import moment from 'moment';
 
@@ -12,6 +12,8 @@ import {
   SELECT_DAY_CALENDAR,
   LOAD_MEMBERS,
   LOAD_APPOINTMENTS_BY_MEMBERS,
+  SET_DISPLAYED_MEMBERS,
+  SELECT_DAY,
 } from './constants';
 import {
   selectDay,
@@ -21,7 +23,9 @@ import {
   loadAppointmentByMembers,
   appointmentByMembersLoaded,
   appointmentByMemberLoadingError,
+  setDisplayedMembers,
 } from './actions';
+import { makeCurrentDay, makeSelectDisplayedMembers } from './selectors';
 
 const baseUrl = 'http://localhost:3000';
 
@@ -57,36 +61,38 @@ export function* getMembers(action) {
         })),
       ),
     );
-    yield put(
-      loadAppointmentByMembers({
-        memberIds: members.map(member => member.id).slice(0, 6),
-      }),
-    );
+    yield put(setDisplayedMembers(members.slice(0, 6)));
   } catch (err) {
     yield put(memberLoadingError(err));
   }
 }
 
-export function* getAppointmentsByMembers(action) {
+export function* getDisplayedMembers() {
+  yield put(loadAppointmentByMembers());
+}
+
+export function* getAppointmentsByMembersAndDate() {
+  const displayedMembers = yield select(makeSelectDisplayedMembers());
+  const currentDate = yield select(makeCurrentDay());
+
+  $('#full-calendar').fullCalendar('gotoDate', currentDate);
   $('#full-calendar').fullCalendar('removeEvents');
 
   const requestURL = new URL('appointments', baseUrl);
-  action.memberIds.forEach(memberId => {
-    requestURL.searchParams.append('memberId', memberId);
+  displayedMembers.forEach(member => {
+    requestURL.searchParams.append('memberId', member.id);
   });
   requestURL.searchParams.append(
     'start_like',
-    action.date || moment().format('YYYY-MM-DD'),
+    currentDate.format('YYYY-MM-DD') || moment().format('YYYY-MM-DD'),
   );
-
-  yield delay(1000);
 
   try {
     const appointments = yield call(request, requestURL.toString());
-    const appointmentsMembers = action.memberIds.map(memberId => ({
-      memberId,
+    const appointmentsMembers = displayedMembers.map(member => ({
+      memberId: member.id,
       appointments: appointments.filter(
-        appointment => appointment.memberId === memberId,
+        appointment => appointment.memberId === member.id,
       ),
     }));
     yield put(appointmentByMembersLoaded(appointmentsMembers));
@@ -115,7 +121,15 @@ export function* membersData() {
 }
 
 export function* appointmentsByMembersData() {
-  yield takeLatest(LOAD_APPOINTMENTS_BY_MEMBERS, getAppointmentsByMembers);
+  yield takeLatest(
+    LOAD_APPOINTMENTS_BY_MEMBERS,
+    getAppointmentsByMembersAndDate,
+  );
+  yield takeLatest(SELECT_DAY, getAppointmentsByMembersAndDate);
+}
+
+export function* displayedMembersData() {
+  yield takeLatest(SET_DISPLAYED_MEMBERS, getDisplayedMembers);
 }
 
 /**
@@ -125,6 +139,7 @@ export default function* root() {
   yield all([
     fork(selectDayOnCalendar),
     fork(membersData),
+    fork(displayedMembersData),
     fork(appointmentsByMembersData),
   ]);
 }
