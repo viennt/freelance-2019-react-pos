@@ -28,6 +28,9 @@ import {
   LOAD_WAITING_APPOINTMENT,
   LOAD_WAITING_APPOINTMENT_ERROR,
   LOAD_WAITING_APPOINTMENT_SUCCESS,
+  MOVE_APPOINTMENT,
+  MOVE_APPOINTMENT_ERROR,
+  MOVE_APPOINTMENT_SUCCESS,
   SELECT_DAY,
   SELECT_DAY_CALENDAR,
   SELECT_WEEK,
@@ -213,13 +216,53 @@ export function appointmentAssigned(appointment) {
 }
 
 /**
- * Dispatched when loading assign appointment to member fails
+ * Dispatched when loading move appointment to member fails
  * @param  {object} error The error
  * @return {object}       An action object with a type of ASSIGN_APPOINTMENT_ERROR passing the error
  */
 export function appointmentAssigningError(error) {
   return {
     type: ASSIGN_APPOINTMENT_ERROR,
+    error,
+  };
+}
+
+/**
+ * Assign move to member, this action starts the request saga
+ * @param  {number} appointmentId The url options
+ * @param  {number} newPositionIndex The url options
+ * @param  {object} newTime The url options
+ * @return {object} An action object with a type of MOVE_APPOINTMENT
+ */
+export function moveAppointment(appointmentId, newPositionIndex, newTime) {
+  return {
+    type: MOVE_APPOINTMENT,
+    appointmentId,
+    newPositionIndex,
+    newTime,
+  };
+}
+
+/**
+ * Dispatched when move appointment to member by the request saga
+ * @param  {object} appointment
+ * @return {object}      An action object with a type of MOVE_APPOINTMENT_SUCCESS passing the members
+ */
+export function appointmentMoved(appointment) {
+  return {
+    type: MOVE_APPOINTMENT_SUCCESS,
+    appointment,
+  };
+}
+
+/**
+ * Dispatched when loading assign appointment to member fails
+ * @param  {object} error The error
+ * @return {object}       An action object with a type of MOVE_APPOINTMENT_ERROR passing the error
+ */
+export function appointmentMovingError(error) {
+  return {
+    type: MOVE_APPOINTMENT_ERROR,
     error,
   };
 }

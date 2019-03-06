@@ -26,6 +26,7 @@ import {
   appointmentAssigned,
   waitingAppointmentsLoaded,
   waitingAppointmentLoadingError,
+  appointmentAssigningError,
 } from './actions';
 import { makeCurrentDay, makeSelectDisplayedMembers } from './selectors';
 
@@ -161,10 +162,10 @@ export function* assignAppointment(action) {
     if (result) {
       yield put(appointmentAssigned(appointment));
     } else {
-      yield put(memberLoadingError(result));
+      yield put(appointmentAssigningError(result));
     }
   } catch (err) {
-    yield put(memberLoadingError(err));
+    yield put(appointmentAssigningError(err));
   }
 }
 

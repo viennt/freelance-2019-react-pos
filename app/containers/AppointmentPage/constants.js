@@ -2,7 +2,7 @@ import $ from 'jquery';
 import moment from 'moment';
 
 import { store } from 'app';
-import { assignAppointment } from './actions';
+import { assignAppointment, moveAppointment } from './actions';
 
 export const EVENT_RENDER_TEMPLATE = event => `
   <div class="app-event">
@@ -40,7 +40,7 @@ export const MAIN_CALENDAR_OPTIONS = {
     const isOverride = displayedMembers[resourceId].appointments.findIndex(
       appointment => {
         const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
-        return date.diff(appTime, 'minute') < 90;
+        return Math.abs(date.diff(appTime, 'minute')) < 90;
       },
     );
     if (isOverride >= 0 || date.isBefore(moment())) {
@@ -58,7 +58,7 @@ export const MAIN_CALENDAR_OPTIONS = {
           eventData: {
             ...event,
             status: 'ASSIGNED',
-            start: date.format('YYYY-MM-DDTHH:mm:ss'),
+            start: `${date.format('YYYY-MM-DD')}T${date.format('HH:mm:ss')}`,
           },
           resourceId,
         }),
@@ -72,7 +72,7 @@ export const MAIN_CALENDAR_OPTIONS = {
     const override = displayedMembers[event.resourceId].appointments.find(
       appointment => {
         const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
-        return event.start.diff(appTime, 'minute') < 90;
+        return Math.abs(event.start.diff(appTime, 'minute')) < 90;
       },
     );
     if (
@@ -80,6 +80,14 @@ export const MAIN_CALENDAR_OPTIONS = {
       event.start.isBefore(moment())
     ) {
       revertFunc();
+    } else {
+      store.dispatch(
+        moveAppointment(
+          event.data.id,
+          event.resourceId,
+          event.start.format('YYYY-MM-DDTHH:mm:ss'),
+        ),
+      );
     }
   },
   /* eslint no-param-reassign: "error" */
@@ -126,3 +134,7 @@ export const LOAD_APPOINTMENTS_BY_MEMBERS_ERROR =
 export const ASSIGN_APPOINTMENT = 'App/ASSIGN_APPOINTMENT';
 export const ASSIGN_APPOINTMENT_SUCCESS = 'App/ASSIGN_APPOINTMENT_SUCCESS';
 export const ASSIGN_APPOINTMENT_ERROR = 'App/ASSIGN_APPOINTMENT_ERROR';
+
+export const MOVE_APPOINTMENT = 'App/MOVE_APPOINTMENT';
+export const MOVE_APPOINTMENT_SUCCESS = 'App/MOVE_APPOINTMENT_SUCCESS';
+export const MOVE_APPOINTMENT_ERROR = 'App/MOVE_APPOINTMENT_ERROR';

@@ -26,6 +26,7 @@ import {
   LOAD_WAITING_APPOINTMENT,
   LOAD_WAITING_APPOINTMENT_SUCCESS,
   LOAD_WAITING_APPOINTMENT_ERROR,
+  MOVE_APPOINTMENT,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -105,12 +106,48 @@ function appointmentReducer(state = initialState, action) {
       return state.set('error', action.error);
 
     case ASSIGN_APPOINTMENT_SUCCESS:
+      return state
+        .updateIn(['appointments', 'calendar'], arr => {
+          const assignedMember = arr.find(
+            member => member.memberId === action.appointment.memberId,
+          );
+          if (assignedMember) {
+            assignedMember.appointments.push(action.appointment);
+          }
+          return [...arr];
+        })
+        .updateIn(['members', 'all'], arr => {
+          const assignedMember = arr.find(
+            member => member.id === action.appointment.memberId,
+          );
+          if (assignedMember) {
+            assignedMember.numberOfAppointments += 1;
+          }
+          return [...arr];
+        });
+
+    case MOVE_APPOINTMENT:
       return state.updateIn(['appointments', 'calendar'], arr => {
-        const assignedMember = arr.find(
-          member => member.memberId === action.appointment.memberId,
+        const oldPosition = arr.find(member =>
+          member.appointments.find(
+            appointment => appointment.id === action.appointmentId,
+          ),
         );
-        assignedMember.appointments.push(action.appointment);
-        return arr;
+        if (!oldPosition) return [...arr];
+
+        const movedAppointmentIndex = oldPosition.appointments.findIndex(
+          appointment => appointment.id === action.appointmentId,
+        );
+        if (movedAppointmentIndex < 0) return [...arr];
+
+        const appointment = {
+          ...oldPosition.appointments[movedAppointmentIndex],
+          start: action.newTime,
+        };
+        oldPosition.appointments.splice(movedAppointmentIndex, 2);
+        arr[action.newPositionIndex].appointments.push(appointment);
+
+        return [...arr];
       });
     default:
       return state;

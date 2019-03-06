@@ -26,6 +26,10 @@ const GlobalStyle = createGlobalStyle`
     font-family: Georgia, Times, 'Times New Roman', serif;
     line-height: 1.5em;
   }
+  
+  :focus {
+    outline: none;
+  }
 
   // ############################################
   // Main calendar - Fullcalendar
