@@ -21,6 +21,7 @@ class FCDragZone extends React.PureComponent {
       const eventInformation = $(this).data('event-information');
       $(this).data('event', {
         data: eventInformation,
+        color: '#ffe400',
         stick: true,
       });
 

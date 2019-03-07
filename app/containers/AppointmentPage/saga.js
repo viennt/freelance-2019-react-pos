@@ -135,10 +135,16 @@ export function* getAppointmentsByMembersAndDate() {
     const events = [];
     appointmentsMembers.forEach((member, index) => {
       member.appointments.forEach(appointment => {
+        let eventColor = '#00b4f7';
+        if (appointment.status === 'ASSIGNED') eventColor = '#ffe400';
+        if (appointment.status === 'CONFIRMED') eventColor = '#98e6f8';
+        if (appointment.status === 'CHECKED_IN') eventColor = '#00b4f7';
+        if (appointment.status === 'PAID') eventColor = '#00dc00';
         events.push({
           resourceId: index,
           start: appointment.start,
           data: appointment,
+          color: eventColor,
         });
       });
     });

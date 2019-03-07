@@ -91,7 +91,7 @@ export const members = [
         option1: 'Full set',
         option2: 'Get',
         option3: 'Pill others',
-        status: 'CHECKED_IN',
+        status: 'PAID',
         memberId: 5,
         start: '2019-03-03T10:15:00',
       },
