@@ -11,7 +11,7 @@ export const waitingAppointments = [
     start: null,
   },
   {
-    id: 21,
+    id: 20,
     userFullName: 'Arjun Tromp',
     phoneNumber: '0294 664 581',
     option1: 'Full set',
@@ -22,7 +22,7 @@ export const waitingAppointments = [
     start: null,
   },
   {
-    id: 31,
+    id: 21,
     userFullName: 'Litzy Hamill',
     phoneNumber: '0532 203 185',
     option1: 'Full set',
@@ -32,7 +32,7 @@ export const waitingAppointments = [
     memberId: null,
   },
   {
-    id: 45,
+    id: 22,
     userFullName: 'Berta Wisoky',
     phoneNumber: '0765 606 848',
     option1: 'Full set',
@@ -43,7 +43,7 @@ export const waitingAppointments = [
     start: null,
   },
   {
-    id: 60,
+    id: 23,
     userFullName: 'Bailey Rosenbaum',
     phoneNumber: '0158 304 669',
     option1: 'Full set',

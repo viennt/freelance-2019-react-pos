@@ -11,7 +11,7 @@ export const appointments = [
     start: '2019-03-04T07:00:00',
   },
   {
-    id: 47,
+    id: 31,
     userFullName: 'Ottis Bartell',
     phoneNumber: '0012 928 615',
     option1: 'Full set',
@@ -22,7 +22,7 @@ export const appointments = [
     start: '2019-03-04T07:00:00',
   },
   {
-    id: 60,
+    id: 32,
     userFullName: 'Rickie Medhurst',
     phoneNumber: '0525 896 423',
     option1: 'Full set',

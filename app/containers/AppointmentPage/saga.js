@@ -9,26 +9,36 @@ import {
   SELECT_DAY,
   SELECT_DAY_CALENDAR,
   LOAD_MEMBERS,
-  LOAD_APPOINTMENTS_BY_MEMBERS,
-  ASSIGN_APPOINTMENT,
   SET_DISPLAYED_MEMBERS,
+  LOAD_APPOINTMENTS_BY_MEMBERS,
   LOAD_WAITING_APPOINTMENT,
+  ASSIGN_APPOINTMENT,
+  MOVE_APPOINTMENT,
+  PUT_BACK_APPOINTMENT,
 } from './constants';
 import {
   selectDay,
   selectWeek,
   membersLoaded,
   memberLoadingError,
+  setDisplayedMembers,
+  waitingAppointmentsLoaded,
+  waitingAppointmentLoadingError,
   loadAppointmentByMembers,
   appointmentByMembersLoaded,
   appointmentByMemberLoadingError,
-  setDisplayedMembers,
   appointmentAssigned,
-  waitingAppointmentsLoaded,
-  waitingAppointmentLoadingError,
   appointmentAssigningError,
+  appointmentMoved,
+  appointmentMovingError,
+  appointmentPutBack,
+  appointmentPutingBackError,
 } from './actions';
-import { makeCurrentDay, makeSelectDisplayedMembers } from './selectors';
+import {
+  makeCurrentDay,
+  makeSelectCalendarAppointments,
+  makeSelectDisplayedMembers,
+} from './selectors';
 
 import {
   GET_APPOINTMENTS_BY_MEMBERS_DATE_API,
@@ -169,6 +179,81 @@ export function* assignAppointment(action) {
   }
 }
 
+export function* moveAppointment(action) {
+  const displayedMembers = yield select(makeSelectDisplayedMembers());
+  const calendarMembers = yield select(makeSelectCalendarAppointments());
+  const assignedMember = displayedMembers[action.newPositionIndex];
+
+  const oldMemberPosition = calendarMembers.find(member =>
+    member.appointments.find(
+      appointment => appointment.id === action.appointmentId,
+    ),
+  );
+  if (!oldMemberPosition) {
+    return;
+  }
+
+  const movedAppointment = oldMemberPosition.appointments.find(
+    appointment => appointment.id === action.appointmentId,
+  );
+  if (!movedAppointment) {
+    return;
+  }
+
+  const appointment = {
+    ...movedAppointment,
+    start: action.newTime,
+    memberId: assignedMember.id,
+  };
+  const requestURL = new URL(POST_ASSIGN_APPOINTMENT_API);
+
+  try {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        memberId: appointment.memberId,
+        appointmentId: appointment.id,
+      }),
+    };
+    const result =
+      process.env.NODE_ENV === 'production'
+        ? mockedAssignAppointment
+        : yield call(request, requestURL.toString(), options);
+    if (result) {
+      yield put(appointmentMoved(appointment));
+    } else {
+      yield put(appointmentMovingError(result));
+    }
+  } catch (err) {
+    yield put(appointmentMovingError(err));
+  }
+}
+
+export function* putBackAppointment(action) {
+  const requestURL = new URL(POST_ASSIGN_APPOINTMENT_API);
+
+  try {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        memberId: action.appointment.memberId,
+        appointmentId: action.appointment.id,
+      }),
+    };
+    const result =
+      process.env.NODE_ENV === 'production'
+        ? mockedAssignAppointment
+        : yield call(request, requestURL.toString(), options);
+    if (result) {
+      yield put(appointmentPutBack(action.appointment));
+    } else {
+      yield put(appointmentPutingBackError(result));
+    }
+  } catch (err) {
+    yield put(appointmentMovingError(err));
+  }
+}
+
 /* **************************** Subroutines ******************************** */
 
 export function* selectDayAndWeek(action) {
@@ -212,6 +297,14 @@ export function* assignAppointmentData() {
   yield takeLatest(ASSIGN_APPOINTMENT, assignAppointment);
 }
 
+export function* moveAppointmentData() {
+  yield takeLatest(MOVE_APPOINTMENT, moveAppointment);
+}
+
+export function* putBackAppointmentData() {
+  yield takeLatest(PUT_BACK_APPOINTMENT, putBackAppointment);
+}
+
 /**
  * Root saga manages watcher lifecycle
  */
@@ -223,5 +316,7 @@ export default function* root() {
     fork(displayedMembersData),
     fork(appointmentsByMembersData),
     fork(assignAppointmentData),
+    fork(moveAppointmentData),
+    fork(putBackAppointmentData),
   ]);
 }

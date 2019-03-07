@@ -2,7 +2,11 @@ import $ from 'jquery';
 import moment from 'moment';
 
 import { store } from 'app';
-import { assignAppointment, moveAppointment } from './actions';
+import {
+  assignAppointment,
+  moveAppointment,
+  putBackAppointment,
+} from './actions';
 
 export const EVENT_RENDER_TEMPLATE = event => `
   <div class="app-event">
@@ -52,7 +56,6 @@ export const MAIN_CALENDAR_OPTIONS = {
     } else {
       // Remove added event from waiting list
       const event = $(this).data().event.data;
-      $(this).remove();
       store.dispatch(
         assignAppointment({
           eventData: {
@@ -88,6 +91,43 @@ export const MAIN_CALENDAR_OPTIONS = {
           event.start.format('YYYY-MM-DDTHH:mm:ss'),
         ),
       );
+    }
+  },
+  /* eslint no-param-reassign: "error" */
+  eventDragStop: (event, jsEvent) => {
+    const trashEl = $('#drag-zone');
+    const ofs = trashEl.offset();
+
+    const x1 = ofs.left;
+    const x2 = ofs.left + trashEl.outerWidth(true);
+    const y1 = ofs.top;
+    const y2 = ofs.top + trashEl.outerHeight(true);
+
+    if (
+      jsEvent.pageX >= x1 &&
+      jsEvent.pageX <= x2 &&
+      jsEvent.pageY >= y1 &&
+      jsEvent.pageY <= y2
+    ) {
+      /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
+      $('#full-calendar').fullCalendar('removeEvents', event._id);
+      store.dispatch(putBackAppointment(event.data));
+      setTimeout(() => {
+        function handleDrag() {
+          const eventInformation = $(this).data('event-information');
+          $(this).data('event', {
+            data: eventInformation,
+            stick: true,
+          });
+
+          $(this).draggable({
+            zIndex: 999,
+            revert: true,
+            revertDuration: 0,
+          });
+        }
+        $('#waiting-events > div').each(handleDrag);
+      }, 1000);
     }
   },
   /* eslint no-param-reassign: "error" */
@@ -138,3 +178,7 @@ export const ASSIGN_APPOINTMENT_ERROR = 'App/ASSIGN_APPOINTMENT_ERROR';
 export const MOVE_APPOINTMENT = 'App/MOVE_APPOINTMENT';
 export const MOVE_APPOINTMENT_SUCCESS = 'App/MOVE_APPOINTMENT_SUCCESS';
 export const MOVE_APPOINTMENT_ERROR = 'App/MOVE_APPOINTMENT_ERROR';
+
+export const PUT_BACK_APPOINTMENT = 'App/PUT_BACK_APPOINTMENT';
+export const PUT_BACK_APPOINTMENT_SUCCESS = 'App/PUT_BACK_APPOINTMENT_SUCCESS';
+export const PUT_BACK_APPOINTMENT_ERROR = 'App/PUT_BACK_APPOINTMENT_ERROR';

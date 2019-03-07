@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import FCAgenda from './FCAgenda';
 import FCDragZone from './FCDragZone';
 
-import LoadingIndicator from '../LoadingIndicator';
 import { MAIN_CALENDAR_OPTIONS } from '../../containers/AppointmentPage/constants';
 
 const CalendarWrapper = styled.div`
@@ -62,11 +61,11 @@ class Calendar extends React.Component {
         <MainCalendar>
           <FCAgenda options={MAIN_CALENDAR_OPTIONS} />
         </MainCalendar>
-        <RightSideBar>
+        <RightSideBar id="drag-zone">
           {!!waitingAppointments && !!waitingAppointments.length ? (
             <FCDragZone events={waitingAppointments} />
           ) : (
-            <LoadingIndicator />
+            ''
           )}
           <SignInWrapper>
             <SignInWrapper.Button onClick={() => {}}>

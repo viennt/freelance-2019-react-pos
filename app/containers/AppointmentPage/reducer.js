@@ -22,11 +22,12 @@ import {
   LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS,
   LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
   SET_DISPLAYED_MEMBERS,
-  ASSIGN_APPOINTMENT_SUCCESS,
   LOAD_WAITING_APPOINTMENT,
   LOAD_WAITING_APPOINTMENT_SUCCESS,
   LOAD_WAITING_APPOINTMENT_ERROR,
-  MOVE_APPOINTMENT,
+  ASSIGN_APPOINTMENT_SUCCESS,
+  MOVE_APPOINTMENT_SUCCESS,
+  PUT_BACK_APPOINTMENT_SUCCESS,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -124,31 +125,72 @@ function appointmentReducer(state = initialState, action) {
             assignedMember.numberOfAppointments += 1;
           }
           return [...arr];
+        })
+        .updateIn(['appointments', 'waiting'], arr => {
+          const movedAppointmentIndex = arr.findIndex(
+            appointment => appointment.id === action.appointment.id,
+          );
+          if (movedAppointmentIndex < 0) return [...arr];
+
+          arr.splice(movedAppointmentIndex, 1);
+
+          return [...arr];
         });
 
-    case MOVE_APPOINTMENT:
+    case MOVE_APPOINTMENT_SUCCESS:
       return state.updateIn(['appointments', 'calendar'], arr => {
         const oldPosition = arr.find(member =>
           member.appointments.find(
-            appointment => appointment.id === action.appointmentId,
+            appointment => appointment.id === action.appointment.id,
           ),
         );
         if (!oldPosition) return [...arr];
 
         const movedAppointmentIndex = oldPosition.appointments.findIndex(
-          appointment => appointment.id === action.appointmentId,
+          appointment => appointment.id === action.appointment.id,
         );
         if (movedAppointmentIndex < 0) return [...arr];
 
-        const appointment = {
-          ...oldPosition.appointments[movedAppointmentIndex],
-          start: action.newTime,
-        };
-        oldPosition.appointments.splice(movedAppointmentIndex, 2);
-        arr[action.newPositionIndex].appointments.push(appointment);
+        oldPosition.appointments.splice(movedAppointmentIndex, 1);
+
+        const newPositionIndex = arr.findIndex(
+          member => member.memberId === action.appointment.memberId,
+        );
+        if (movedAppointmentIndex < 0) return [...arr];
+
+        arr[newPositionIndex].appointments.push(action.appointment);
 
         return [...arr];
       });
+
+    case PUT_BACK_APPOINTMENT_SUCCESS:
+      return state
+        .updateIn(['appointments', 'calendar'], arr => {
+          const oldPosition = arr.find(member =>
+            member.appointments.find(
+              appointment => appointment.id === action.appointment.id,
+            ),
+          );
+          if (!oldPosition) return [...arr];
+
+          const movedAppointmentIndex = oldPosition.appointments.findIndex(
+            appointment => appointment.id === action.appointment.id,
+          );
+          if (movedAppointmentIndex < 0) return [...arr];
+
+          oldPosition.appointments.splice(movedAppointmentIndex, 1);
+
+          return [...arr];
+        })
+        .updateIn(['appointments', 'waiting'], arr => [
+          {
+            ...action.appointment,
+            status: 'WAITING',
+            memberId: null,
+            start: null,
+          },
+          ...arr,
+        ]);
     default:
       return state;
   }

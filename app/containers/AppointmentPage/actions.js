@@ -31,6 +31,9 @@ import {
   MOVE_APPOINTMENT,
   MOVE_APPOINTMENT_ERROR,
   MOVE_APPOINTMENT_SUCCESS,
+  PUT_BACK_APPOINTMENT,
+  PUT_BACK_APPOINTMENT_ERROR,
+  PUT_BACK_APPOINTMENT_SUCCESS,
   SELECT_DAY,
   SELECT_DAY_CALENDAR,
   SELECT_WEEK,
@@ -256,13 +259,49 @@ export function appointmentMoved(appointment) {
 }
 
 /**
- * Dispatched when loading assign appointment to member fails
+ * Dispatched when loading move appointment to member fails
  * @param  {object} error The error
  * @return {object}       An action object with a type of MOVE_APPOINTMENT_ERROR passing the error
  */
 export function appointmentMovingError(error) {
   return {
     type: MOVE_APPOINTMENT_ERROR,
+    error,
+  };
+}
+
+/**
+ * Assign put back to waiting list, this action starts the request saga
+ * @param  {object} appointment The url options
+ * @return {object} An action object with a type of PUT_BACK_APPOINTMENT
+ */
+export function putBackAppointment(appointment) {
+  return {
+    type: PUT_BACK_APPOINTMENT,
+    appointment,
+  };
+}
+
+/**
+ * Dispatched when put back appointment to waiting list by the request saga
+ * @param  {object} appointment
+ * @return {object}      An action object with a type of PUT_BACK_APPOINTMENT_SUCCESS passing the members
+ */
+export function appointmentPutBack(appointment) {
+  return {
+    type: PUT_BACK_APPOINTMENT_SUCCESS,
+    appointment,
+  };
+}
+
+/**
+ * Dispatched when loading put back appointment to waiting fails
+ * @param  {object} error The error
+ * @return {object}       An action object with a type of PUT_BACK_APPOINTMENT_ERROR passing the error
+ */
+export function appointmentPutingBackError(error) {
+  return {
+    type: PUT_BACK_APPOINTMENT_ERROR,
     error,
   };
 }
