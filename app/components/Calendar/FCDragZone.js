@@ -6,7 +6,7 @@ import 'jquery-ui';
 import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 
 const DragZoneWrapper = styled.div`
-  //height: calc(100vh - 4rem - 4rem - 4rem);
+  height: calc(100vh - 4rem - 4rem - 4rem);
   //overflow: hidden;
 `;
 
@@ -22,7 +22,6 @@ const Button = styled.button`
   width: 100%;
   font-size: 1rem;
   line-height: 1.5;
-  height: 100%;
   cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
   text-align: center;
 `;
@@ -63,14 +62,11 @@ class FCDragZone extends React.PureComponent {
     const { events, index } = this.props;
     const displayedEvents = events.slice(index, index + 3);
     return (
-      <div>
-        <Button
-          disabled={index >= events.length - 3}
-          onClick={() => this.nextSlide()}
-        >
-          <FaCaretDown />
+      <DragZoneWrapper>
+        <Button disabled={index <= 0} onClick={() => this.prevSlide()}>
+          <FaCaretUp />
         </Button>
-        <DragZoneWrapper id="waiting-events">
+        <div id="waiting-events">
           {displayedEvents.map(event => (
             <EventWrapper
               className="app-event"
@@ -85,11 +81,14 @@ class FCDragZone extends React.PureComponent {
               <div className="app-event__option">- {event.option3}</div>
             </EventWrapper>
           ))}
-        </DragZoneWrapper>
-        <Button disabled={index <= 0} onClick={() => this.prevSlide()}>
-          <FaCaretUp />
+        </div>
+        <Button
+          disabled={index >= events.length - 3}
+          onClick={() => this.nextSlide()}
+        >
+          <FaCaretDown />
         </Button>
-      </div>
+      </DragZoneWrapper>
     );
   }
 }
