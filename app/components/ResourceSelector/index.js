@@ -139,12 +139,15 @@ class ResourceSelector extends React.Component {
   }
 
   renderResource(resource) {
+    const { calendarMembers } = this.props;
+    const member = calendarMembers.find(mem => mem.memberId === resource.id);
+    const numberOfAppointments = member ? member.appointments.length : 0;
     return (
       <>
         <Resource.Avatar>
           <img src={resource.imageUrl} alt={resource.orderNumber} />
         </Resource.Avatar>
-        <Resource.OrderNumber notEmpty={resource.numberOfAppointments}>
+        <Resource.OrderNumber notEmpty={numberOfAppointments}>
           {resource.orderNumber}
         </Resource.OrderNumber>
         <Resource.Title>{resource.title}</Resource.Title>
@@ -218,6 +221,7 @@ class ResourceSelector extends React.Component {
 
 ResourceSelector.propTypes = {
   resources: PropTypes.any,
+  calendarMembers: PropTypes.any,
   onChangeToday: PropTypes.func,
   loadMembers: PropTypes.func,
   setDisplayedMembers: PropTypes.func,
