@@ -83,6 +83,19 @@ const GlobalStyle = createGlobalStyle`
     color: #ffffff;
   }
   
+  .fc-ltr .fc-time-grid .fc-now-indicator-arrow {
+    left: 50px;
+    background: #ffffff;
+    color: #f00;
+    border: none;
+    box-shadow: 0 0 10px #949494;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-top: -10px;
+    padding: 1px 10px;
+    z-index: 9;
+}
+  
   // ############################################
   // Main calendar - App Event
   // ############################################
