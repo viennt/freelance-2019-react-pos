@@ -6,6 +6,7 @@ import {
   assignAppointment,
   moveAppointment,
   putBackAppointment,
+  selectAppointment,
 } from './actions';
 
 export const EVENT_RENDER_TEMPLATE = event => `
@@ -37,6 +38,22 @@ export const MAIN_CALENDAR_OPTIONS = {
   timezone: 'local',
   resources: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
   schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+  eventClick: event => {
+    const displayedMembers = store
+      .getState()
+      .getIn(['appointment', 'appointments', 'calendar']);
+    const oldPosition = displayedMembers.find(member =>
+      member.appointments.find(appointment => appointment.id === event.data.id),
+    );
+    if (!oldPosition) return;
+
+    const appointment = oldPosition.appointments.find(
+      app => app.id === event.data.id,
+    );
+    if (!appointment) return;
+
+    store.dispatch(selectAppointment(appointment, event));
+  },
   drop(date, jsEvent, ui, resourceId) {
     const displayedMembers = store
       .getState()
@@ -164,6 +181,11 @@ export const MAIN_CALENDAR_OPTIONS = {
 export const SELECT_DAY = 'app/Appointment/SELECT_DAY';
 export const SELECT_WEEK = 'app/Appointment/SELECT_WEEK';
 export const SELECT_DAY_CALENDAR = 'app/Appointment/SELECT_DAY_CALENDAR';
+
+export const SELECT_APPOINTMENT = 'app/Appointment/SELECT_APPOINTMENT';
+export const DESELECT_APPOINTMENT = 'app/Appointment/DESELECT_APPOINTMENT';
+export const NEXT_STATUS_APPOINTMENT =
+  'app/Appointment/NEXT_STATUS_APPOINTMENT';
 
 export const LOAD_MEMBERS = 'App/LOAD_MEMBERS';
 export const LOAD_MEMBERS_SUCCESS = 'App/LOAD_MEMBERS_SUCCESS';

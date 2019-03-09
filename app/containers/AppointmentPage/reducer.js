@@ -28,6 +28,9 @@ import {
   ASSIGN_APPOINTMENT_SUCCESS,
   MOVE_APPOINTMENT_SUCCESS,
   PUT_BACK_APPOINTMENT_SUCCESS,
+  SELECT_APPOINTMENT,
+  DESELECT_APPOINTMENT,
+  NEXT_STATUS_APPOINTMENT,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -48,6 +51,8 @@ export const initialState = fromJS({
   error: false,
   currentDay: initialCurrentDay,
   currentWeekDays: initialWeekDays,
+  selectedAppointment: null,
+  selectedFCEvent: null,
   members: {
     all: [],
     displayed: [],
@@ -77,6 +82,39 @@ function appointmentReducer(state = initialState, action) {
           startOfWeek.clone().add(6, 'd'),
         ]),
       );
+    case SELECT_APPOINTMENT:
+      return state
+        .set('selectedAppointment', action.appointment)
+        .set('selectedFCEvent', action.fcEvent);
+    case DESELECT_APPOINTMENT:
+      return state
+        .set('selectedAppointment', null)
+        .set('selectedFCEvent', null);
+    case NEXT_STATUS_APPOINTMENT:
+      return state.updateIn(['appointments', 'calendar'], arr => {
+        const member = arr.find(mem =>
+          mem.appointments.find(app => app.id === action.appointmentId),
+        );
+        if (!member) return [...arr];
+
+        const appointmentIndex = member.appointments.findIndex(
+          app => app.id === action.appointmentId,
+        );
+        if (appointmentIndex < 0) return [...arr];
+
+        const { status } = member.appointments[appointmentIndex];
+        if (status === 'ASSIGNED') {
+          member.appointments[appointmentIndex].status = 'CONFIRMED';
+        }
+        if (status === 'CONFIRMED') {
+          member.appointments[appointmentIndex].status = 'CHECKED_IN';
+        }
+        if (status === 'CHECKED_IN') {
+          member.appointments[appointmentIndex].status = 'PAID';
+        }
+
+        return [...arr];
+      });
 
     case LOAD_MEMBERS:
       return state

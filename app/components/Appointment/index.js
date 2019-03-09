@@ -36,6 +36,7 @@ AppointmentWrapper.Close = styled.div`
   line-height: 1;
   font-size: 2rem;
   color: #ffffff;
+  cursor: pointer;
 `;
 
 AppointmentWrapper.Body = styled.div`
@@ -269,7 +270,13 @@ class Appointment extends React.Component {
   }
 
   closeModal() {
-    //
+    const { deselectAppointment } = this.props;
+    deselectAppointment();
+  }
+
+  nextStatus() {
+    const { appointment, nextStatus } = this.props;
+    nextStatus(appointment.id);
   }
 
   renderHeader() {
@@ -437,13 +444,37 @@ class Appointment extends React.Component {
     );
   }
 
+  renderNextStatusButton() {
+    const { appointment } = this.props;
+    if (appointment.status === 'ASSIGNED')
+      return (
+        <Button onClick={() => this.nextStatus()} primary="true">
+          Confirm
+        </Button>
+      );
+    if (appointment.status === 'CONFIRMED')
+      return (
+        <Button onClick={() => this.nextStatus()} primary="true">
+          Check In
+        </Button>
+      );
+    if (appointment.status === 'CHECKED_IN')
+      return (
+        <Button onClick={() => this.nextStatus()} primary="true">
+          Pay
+        </Button>
+      );
+    return '';
+  }
+
   render() {
     const { appointment } = this.props;
+    if (!appointment) return '';
     return (
       <AppointmentPopup
         closeOnDocumentClick
-        open={!!appointment}
-        onClose={this.closeModal}
+        open
+        onClose={() => this.closeModal()}
       >
         <AppointmentWrapper>
           <AppointmentWrapper.Close onClick={() => this.closeModal()}>
@@ -455,11 +486,7 @@ class Appointment extends React.Component {
             <div>
               <Button onClick={() => this.closeModal()}>Cancel</Button>
             </div>
-            <div>
-              <Button onClick={() => this.closeModal()} primary="true">
-                Confirm
-              </Button>
-            </div>
+            <div>{this.renderNextStatusButton()}</div>
           </AppointmentWrapper.Footer>
         </AppointmentWrapper>
       </AppointmentPopup>
@@ -469,6 +496,8 @@ class Appointment extends React.Component {
 
 Appointment.propTypes = {
   appointment: PropTypes.any,
+  deselectAppointment: PropTypes.func,
+  nextStatus: PropTypes.func,
   // services: PropTypes.any,
   // products: PropTypes.any,
 };

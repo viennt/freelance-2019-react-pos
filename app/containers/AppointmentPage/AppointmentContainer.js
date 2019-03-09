@@ -1,27 +1,21 @@
-// import { createStructuredSelector } from 'reselect';
+import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import Appointment from 'components/Appointment';
 
-export function mapDispatchToProps() {
+import { makeSelectAppointment } from './selectors';
+import { deselectAppointment, nextStatusAppointment } from './actions';
+
+export function mapDispatchToProps(dispatch) {
   return {
-    //
+    deselectAppointment: () => dispatch(deselectAppointment()),
+    nextStatus: id => dispatch(nextStatusAppointment(id)),
   };
 }
 
-const mapStateToProps = () => ({
-  appointment: {
-    id: 32,
-    userFullName: 'Rickie Medhurst',
-    phoneNumber: '0525 896 423',
-    option1: 'Full set',
-    option2: 'Get',
-    option3: 'Pill others',
-    status: 'CONFIRMED',
-    memberId: 1,
-    start: '2019-03-11T11:30:00',
-  },
+const mapStateToProps = createStructuredSelector({
+  appointment: makeSelectAppointment(),
 });
 
 const withConnect = connect(

@@ -15,6 +15,7 @@ import {
   ASSIGN_APPOINTMENT,
   MOVE_APPOINTMENT,
   PUT_BACK_APPOINTMENT,
+  NEXT_STATUS_APPOINTMENT,
 } from './constants';
 import {
   selectDay,
@@ -33,11 +34,13 @@ import {
   appointmentMovingError,
   appointmentPutBack,
   appointmentPutingBackError,
+  deselectAppointment,
 } from './actions';
 import {
   makeCurrentDay,
   makeSelectCalendarAppointments,
   makeSelectDisplayedMembers,
+  makeSelectFCEvent,
 } from './selectors';
 
 import {
@@ -260,6 +263,19 @@ export function* putBackAppointment(action) {
   }
 }
 
+export function* nextStatusAppointment() {
+  const fcEvent = yield select(makeSelectFCEvent());
+  if (fcEvent) {
+    const { status } = fcEvent.data;
+    if (status === 'ASSIGNED') fcEvent.color = '#ffe400';
+    if (status === 'CONFIRMED') fcEvent.color = '#98e6f8';
+    if (status === 'CHECKED_IN') fcEvent.color = '#00b4f7';
+    if (status === 'PAID') fcEvent.color = '#00dc00';
+    $('#full-calendar').fullCalendar('updateEvent', fcEvent);
+    yield put(deselectAppointment());
+  }
+}
+
 /* **************************** Subroutines ******************************** */
 
 export function* selectDayAndWeek(action) {
@@ -311,6 +327,10 @@ export function* putBackAppointmentData() {
   yield takeLatest(PUT_BACK_APPOINTMENT, putBackAppointment);
 }
 
+export function* nextStatusAppointmentData() {
+  yield takeLatest(NEXT_STATUS_APPOINTMENT, nextStatusAppointment);
+}
+
 /**
  * Root saga manages watcher lifecycle
  */
@@ -324,5 +344,6 @@ export default function* root() {
     fork(assignAppointmentData),
     fork(moveAppointmentData),
     fork(putBackAppointmentData),
+    fork(nextStatusAppointmentData),
   ]);
 }

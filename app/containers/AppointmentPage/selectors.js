@@ -47,6 +47,16 @@ const makeSelectCalendarAppointments = () =>
     appointmentState.getIn(['appointments', 'calendar']),
   );
 
+const makeSelectAppointment = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.get('selectedAppointment'),
+  );
+
+const makeSelectFCEvent = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.get('selectedFCEvent'),
+  );
+
 export {
   currentAppointment,
   makeCurrentDay,
@@ -57,4 +67,6 @@ export {
   makeSelectDisplayedMembers,
   makeSelectWaitingAppointments,
   makeSelectCalendarAppointments,
+  makeSelectAppointment,
+  makeSelectFCEvent,
 };

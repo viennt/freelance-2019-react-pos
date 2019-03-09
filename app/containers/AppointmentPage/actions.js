@@ -19,6 +19,7 @@ import {
   ASSIGN_APPOINTMENT,
   ASSIGN_APPOINTMENT_ERROR,
   ASSIGN_APPOINTMENT_SUCCESS,
+  DESELECT_APPOINTMENT,
   LOAD_APPOINTMENTS_BY_MEMBERS,
   LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
   LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS,
@@ -31,9 +32,11 @@ import {
   MOVE_APPOINTMENT,
   MOVE_APPOINTMENT_ERROR,
   MOVE_APPOINTMENT_SUCCESS,
+  NEXT_STATUS_APPOINTMENT,
   PUT_BACK_APPOINTMENT,
   PUT_BACK_APPOINTMENT_ERROR,
   PUT_BACK_APPOINTMENT_SUCCESS,
+  SELECT_APPOINTMENT,
   SELECT_DAY,
   SELECT_DAY_CALENDAR,
   SELECT_WEEK,
@@ -76,9 +79,29 @@ export function selectDayOnCalendar(day) {
   };
 }
 
+export function selectAppointment(appointment, fcEvent) {
+  return {
+    type: SELECT_APPOINTMENT,
+    appointment,
+    fcEvent,
+  };
+}
+
+export function deselectAppointment() {
+  return {
+    type: DESELECT_APPOINTMENT,
+  };
+}
+
+export function nextStatusAppointment(appointmentId) {
+  return {
+    type: NEXT_STATUS_APPOINTMENT,
+    appointmentId,
+  };
+}
+
 /**
  * Load the members, this action starts the request saga
- * @param  {object} options The url options
  * @return {object} An action object with a type of LOAD_MEMBERS
  */
 export function loadMembers() {
