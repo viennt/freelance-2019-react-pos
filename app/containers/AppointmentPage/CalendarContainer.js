@@ -7,6 +7,7 @@ import Calendar from 'components/Calendar';
 import {
   loadWaitingAppointments,
   nextWaitingAppointment,
+  openAddingAppointment,
   prevWaitingAppointment,
 } from './actions';
 import {
@@ -19,6 +20,7 @@ export function mapDispatchToProps(dispatch) {
     loadWaitingAppointments: day => dispatch(loadWaitingAppointments(day)),
     nextWaitingAppointment: () => dispatch(nextWaitingAppointment()),
     prevWaitingAppointment: () => dispatch(prevWaitingAppointment()),
+    openAddingAppointment: app => dispatch(openAddingAppointment(app)),
   };
 }
 

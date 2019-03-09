@@ -20,6 +20,7 @@ import {
   ASSIGN_APPOINTMENT_ERROR,
   ASSIGN_APPOINTMENT_SUCCESS,
   CANCEL_APPOINTMENT,
+  CLOSE_ADDING_APPOINTMENT,
   DESELECT_APPOINTMENT,
   LOAD_APPOINTMENTS_BY_MEMBERS,
   LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
@@ -35,6 +36,7 @@ import {
   MOVE_APPOINTMENT_SUCCESS,
   NEXT_STATUS_APPOINTMENT,
   NEXT_WAITING_APPOINTMENT,
+  OPEN_ADDING_APPOINTMENT,
   PREV_WAITING_APPOINTMENT,
   PUT_BACK_APPOINTMENT,
   PUT_BACK_APPOINTMENT_ERROR,
@@ -107,6 +109,19 @@ export function nextStatusAppointment(appointmentId) {
   return {
     type: NEXT_STATUS_APPOINTMENT,
     appointmentId,
+  };
+}
+
+export function openAddingAppointment(appointment) {
+  return {
+    type: OPEN_ADDING_APPOINTMENT,
+    appointment,
+  };
+}
+
+export function closeAddingAppointment() {
+  return {
+    type: CLOSE_ADDING_APPOINTMENT,
   };
 }
 

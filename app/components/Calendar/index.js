@@ -60,6 +60,7 @@ class Calendar extends React.Component {
       waitingIndex,
       nextWaitingAppointment,
       prevWaitingAppointment,
+      openAddingAppointment,
     } = this.props;
     return (
       <CalendarWrapper>
@@ -78,7 +79,7 @@ class Calendar extends React.Component {
             ''
           )}
           <SignInWrapper>
-            <SignInWrapper.Button onClick={() => {}}>
+            <SignInWrapper.Button onClick={() => openAddingAppointment({})}>
               Sign in
             </SignInWrapper.Button>
           </SignInWrapper>
@@ -94,6 +95,7 @@ Calendar.propTypes = {
   waitingIndex: PropTypes.number,
   nextWaitingAppointment: PropTypes.func,
   prevWaitingAppointment: PropTypes.func,
+  openAddingAppointment: PropTypes.func,
 };
 
 export default Calendar;

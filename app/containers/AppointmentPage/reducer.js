@@ -33,6 +33,8 @@ import {
   NEXT_STATUS_APPOINTMENT,
   NEXT_WAITING_APPOINTMENT,
   PREV_WAITING_APPOINTMENT,
+  OPEN_ADDING_APPOINTMENT,
+  CLOSE_ADDING_APPOINTMENT,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -54,6 +56,7 @@ export const initialState = fromJS({
   currentDay: initialCurrentDay,
   currentWeekDays: initialWeekDays,
   selectedAppointment: null,
+  addingAppointment: null,
   selectedFCEvent: null,
   members: {
     all: [],
@@ -118,6 +121,10 @@ function appointmentReducer(state = initialState, action) {
 
         return [...arr];
       });
+    case OPEN_ADDING_APPOINTMENT:
+      return state.set('addingAppointment', action.appointment);
+    case CLOSE_ADDING_APPOINTMENT:
+      return state.set('addingAppointment', null);
 
     case LOAD_MEMBERS:
       return state

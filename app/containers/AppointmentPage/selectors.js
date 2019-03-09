@@ -57,6 +57,11 @@ const makeSelectAppointment = () =>
     appointmentState.get('selectedAppointment'),
   );
 
+const makeAddingAppointment = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.get('addingAppointment'),
+  );
+
 const makeSelectFCEvent = () =>
   createSelector(currentAppointment, appointmentState =>
     appointmentState.get('selectedFCEvent'),
@@ -75,4 +80,5 @@ export {
   makeSelectCalendarAppointments,
   makeSelectAppointment,
   makeSelectFCEvent,
+  makeAddingAppointment,
 };
