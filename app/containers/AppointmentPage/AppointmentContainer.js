@@ -5,11 +5,16 @@ import { compose } from 'redux';
 import Appointment from 'components/Appointment';
 
 import { makeSelectAppointment } from './selectors';
-import { deselectAppointment, nextStatusAppointment } from './actions';
+import {
+  cancelAppointment,
+  deselectAppointment,
+  nextStatusAppointment,
+} from './actions';
 
 export function mapDispatchToProps(dispatch) {
   return {
     deselectAppointment: () => dispatch(deselectAppointment()),
+    cancelAppointment: id => dispatch(cancelAppointment(id)),
     nextStatus: id => dispatch(nextStatusAppointment(id)),
   };
 }

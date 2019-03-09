@@ -5,19 +5,18 @@ import Popup from 'reactjs-popup';
 import moment from 'moment';
 import { FaGreaterThan, FaTimesCircle } from 'react-icons/fa';
 
-const AppointmentPopup = styled(Popup)`
+const AppPopup = styled(Popup)`
   border-radius: 1.5rem;
   padding: 0 !important;
   border: none !important;
-  width: 50rem !important;
   overflow: hidden;
 `;
 
-const AppointmentWrapper = styled.div`
+const AppPopupWrapper = styled.div`
   position: relative;
 `;
 
-AppointmentWrapper.Header = styled.div`
+AppPopupWrapper.Header = styled.div`
   height: 3rem;
   font-size: 20px;
   font-weight: bold;
@@ -29,7 +28,7 @@ AppointmentWrapper.Header = styled.div`
   text-align: center;
 `;
 
-AppointmentWrapper.Close = styled.div`
+AppPopupWrapper.Close = styled.div`
   position: absolute;
   right: 0.5rem;
   top: 0.25rem;
@@ -39,13 +38,13 @@ AppointmentWrapper.Close = styled.div`
   cursor: pointer;
 `;
 
-AppointmentWrapper.Body = styled.div`
+AppPopupWrapper.Body = styled.div`
   background: #ffffff;
   width: 100%;
   padding: 1rem 1rem 0 1rem;
 `;
 
-AppointmentWrapper.Footer = styled.div`
+AppPopupWrapper.Footer = styled.div`
   display: flex;
   padding: 0.5rem 1rem 1rem 1rem;
 
@@ -53,6 +52,34 @@ AppointmentWrapper.Footer = styled.div`
     width: 50%;
     text-align: center;
   }
+`;
+
+// ************************************************* //
+// ************************************************* //
+// ************************************************* //
+
+const AppointmentPopup = styled(AppPopup)`
+  width: 50rem !important;
+`;
+
+const AppointmentWrapper = styled(AppPopupWrapper)`
+  //
+`;
+
+AppointmentWrapper.Header = styled(AppPopupWrapper.Header)`
+  //
+`;
+
+AppointmentWrapper.Close = styled(AppPopupWrapper.Close)`
+  //
+`;
+
+AppointmentWrapper.Body = styled(AppPopupWrapper.Body)`
+  //
+`;
+
+AppointmentWrapper.Footer = styled(AppPopupWrapper.Footer)`
+  //
 `;
 
 const UserInformation = styled.div`
@@ -147,9 +174,38 @@ const Button = styled.button`
   padding: 0 2rem;
 `;
 
+// ************************************************* //
+// ************************************************* //
+// ************************************************* //
+
+const ConfirmationPopup = styled(AppPopup)`
+  width: 30rem !important;
+`;
+
+const ConfirmationWrapper = styled(AppPopupWrapper)`
+  //
+`;
+
+ConfirmationWrapper.Header = styled(AppPopupWrapper.Header)`
+  //
+`;
+
+ConfirmationWrapper.Body = styled(AppPopupWrapper.Body)`
+  text-align: center;
+`;
+
+ConfirmationWrapper.Close = styled(AppPopupWrapper.Close)`
+  //
+`;
+
+ConfirmationWrapper.Footer = styled(AppPopupWrapper.Footer)`
+  //
+`;
+
 class Appointment extends React.Component {
   state = {
     noteValue: '',
+    confirmationModal: false,
     services: [
       {
         name: 'Service 1',
@@ -272,6 +328,24 @@ class Appointment extends React.Component {
   closeModal() {
     const { deselectAppointment } = this.props;
     deselectAppointment();
+  }
+
+  openConfirmationModal() {
+    this.setState({
+      confirmationModal: true,
+    });
+  }
+
+  closeConfirmationModal() {
+    this.setState({
+      confirmationModal: false,
+    });
+  }
+
+  confirmCancelAppointment() {
+    this.closeConfirmationModal();
+    const { appointment, cancelAppointment } = this.props;
+    cancelAppointment(appointment.id);
   }
 
   nextStatus() {
@@ -471,25 +545,56 @@ class Appointment extends React.Component {
     const { appointment } = this.props;
     if (!appointment) return '';
     return (
-      <AppointmentPopup
-        closeOnDocumentClick
-        open
-        onClose={() => this.closeModal()}
-      >
-        <AppointmentWrapper>
-          <AppointmentWrapper.Close onClick={() => this.closeModal()}>
-            <FaTimesCircle />
-          </AppointmentWrapper.Close>
-          {this.renderHeader()}
-          {this.renderBody()}
-          <AppointmentWrapper.Footer>
-            <div>
-              <Button onClick={() => this.closeModal()}>Cancel</Button>
-            </div>
-            <div>{this.renderNextStatusButton()}</div>
-          </AppointmentWrapper.Footer>
-        </AppointmentWrapper>
-      </AppointmentPopup>
+      <div>
+        <AppointmentPopup
+          closeOnDocumentClick
+          open
+          onClose={() => this.closeModal()}
+        >
+          <AppointmentWrapper>
+            <AppointmentWrapper.Close onClick={() => this.closeModal()}>
+              <FaTimesCircle />
+            </AppointmentWrapper.Close>
+            {this.renderHeader()}
+            {this.renderBody()}
+            <AppointmentWrapper.Footer>
+              <div>
+                <Button onClick={() => this.openConfirmationModal()}>
+                  Cancel
+                </Button>
+              </div>
+              <div>{this.renderNextStatusButton()}</div>
+            </AppointmentWrapper.Footer>
+          </AppointmentWrapper>
+        </AppointmentPopup>
+        <ConfirmationPopup open={this.state.confirmationModal}>
+          <ConfirmationWrapper>
+            <ConfirmationWrapper.Close
+              onClick={() => this.closeConfirmationModal()}
+            >
+              <FaTimesCircle />
+            </ConfirmationWrapper.Close>
+            <ConfirmationWrapper.Header backgroundColor="#00b4f7">
+              Confirmation
+            </ConfirmationWrapper.Header>
+            <ConfirmationWrapper.Body>
+              Do you want to Cancel this Appointment?
+            </ConfirmationWrapper.Body>
+            <ConfirmationWrapper.Footer>
+              <div>
+                <Button onClick={() => this.confirmCancelAppointment()}>
+                  Yes
+                </Button>
+              </div>
+              <div>
+                <Button primary onClick={() => this.closeConfirmationModal()}>
+                  No
+                </Button>
+              </div>
+            </ConfirmationWrapper.Footer>
+          </ConfirmationWrapper>
+        </ConfirmationPopup>
+      </div>
     );
   }
 }
@@ -497,6 +602,7 @@ class Appointment extends React.Component {
 Appointment.propTypes = {
   appointment: PropTypes.any,
   deselectAppointment: PropTypes.func,
+  cancelAppointment: PropTypes.func,
   nextStatus: PropTypes.func,
   // services: PropTypes.any,
   // products: PropTypes.any,

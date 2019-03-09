@@ -184,6 +184,7 @@ export const SELECT_DAY_CALENDAR = 'app/Appointment/SELECT_DAY_CALENDAR';
 
 export const SELECT_APPOINTMENT = 'app/Appointment/SELECT_APPOINTMENT';
 export const DESELECT_APPOINTMENT = 'app/Appointment/DESELECT_APPOINTMENT';
+export const CANCEL_APPOINTMENT = 'app/Appointment/CANCEL_APPOINTMENT';
 export const NEXT_STATUS_APPOINTMENT =
   'app/Appointment/NEXT_STATUS_APPOINTMENT';
 

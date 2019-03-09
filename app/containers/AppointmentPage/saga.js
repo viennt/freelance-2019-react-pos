@@ -16,6 +16,7 @@ import {
   MOVE_APPOINTMENT,
   PUT_BACK_APPOINTMENT,
   NEXT_STATUS_APPOINTMENT,
+  CANCEL_APPOINTMENT,
 } from './constants';
 import {
   selectDay,
@@ -276,6 +277,15 @@ export function* nextStatusAppointment() {
   }
 }
 
+export function* cancelAppointment() {
+  const fcEvent = yield select(makeSelectFCEvent());
+  if (fcEvent) {
+    /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
+    $('#full-calendar').fullCalendar('removeEvents', [fcEvent._id]);
+    yield put(deselectAppointment());
+  }
+}
+
 /* **************************** Subroutines ******************************** */
 
 export function* selectDayAndWeek(action) {
@@ -331,6 +341,10 @@ export function* nextStatusAppointmentData() {
   yield takeLatest(NEXT_STATUS_APPOINTMENT, nextStatusAppointment);
 }
 
+export function* cancelAppointmentData() {
+  yield takeLatest(CANCEL_APPOINTMENT, cancelAppointment);
+}
+
 /**
  * Root saga manages watcher lifecycle
  */
@@ -345,5 +359,6 @@ export default function* root() {
     fork(moveAppointmentData),
     fork(putBackAppointmentData),
     fork(nextStatusAppointmentData),
+    fork(cancelAppointmentData),
   ]);
 }

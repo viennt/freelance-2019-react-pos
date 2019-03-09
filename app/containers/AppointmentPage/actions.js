@@ -19,6 +19,7 @@ import {
   ASSIGN_APPOINTMENT,
   ASSIGN_APPOINTMENT_ERROR,
   ASSIGN_APPOINTMENT_SUCCESS,
+  CANCEL_APPOINTMENT,
   DESELECT_APPOINTMENT,
   LOAD_APPOINTMENTS_BY_MEMBERS,
   LOAD_APPOINTMENTS_BY_MEMBERS_ERROR,
@@ -90,6 +91,13 @@ export function selectAppointment(appointment, fcEvent) {
 export function deselectAppointment() {
   return {
     type: DESELECT_APPOINTMENT,
+  };
+}
+
+export function cancelAppointment(appointmentId) {
+  return {
+    type: CANCEL_APPOINTMENT,
+    appointmentId,
   };
 }
 
