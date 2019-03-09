@@ -4,17 +4,27 @@ import { compose } from 'redux';
 
 import Calendar from 'components/Calendar';
 
-import { loadWaitingAppointments } from './actions';
-import { makeSelectWaitingAppointments } from './selectors';
+import {
+  loadWaitingAppointments,
+  nextWaitingAppointment,
+  prevWaitingAppointment,
+} from './actions';
+import {
+  makeSelectWaitingAppointments,
+  makeSelectWaitingIndexAppointments,
+} from './selectors';
 
 export function mapDispatchToProps(dispatch) {
   return {
     loadWaitingAppointments: day => dispatch(loadWaitingAppointments(day)),
+    nextWaitingAppointment: () => dispatch(nextWaitingAppointment()),
+    prevWaitingAppointment: () => dispatch(prevWaitingAppointment()),
   };
 }
 
 const mapStateToProps = createStructuredSelector({
   waitingAppointments: makeSelectWaitingAppointments(),
+  waitingIndex: makeSelectWaitingIndexAppointments(),
 });
 
 const withConnect = connect(

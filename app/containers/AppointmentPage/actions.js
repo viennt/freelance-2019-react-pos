@@ -34,6 +34,8 @@ import {
   MOVE_APPOINTMENT_ERROR,
   MOVE_APPOINTMENT_SUCCESS,
   NEXT_STATUS_APPOINTMENT,
+  NEXT_WAITING_APPOINTMENT,
+  PREV_WAITING_APPOINTMENT,
   PUT_BACK_APPOINTMENT,
   PUT_BACK_APPOINTMENT_ERROR,
   PUT_BACK_APPOINTMENT_SUCCESS,
@@ -187,6 +189,18 @@ export function waitingAppointmentLoadingError(error) {
   return {
     type: LOAD_WAITING_APPOINTMENT_ERROR,
     error,
+  };
+}
+
+export function nextWaitingAppointment() {
+  return {
+    type: NEXT_WAITING_APPOINTMENT,
+  };
+}
+
+export function prevWaitingAppointment() {
+  return {
+    type: PREV_WAITING_APPOINTMENT,
   };
 }
 

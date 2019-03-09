@@ -55,7 +55,12 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const { waitingAppointments } = this.props;
+    const {
+      waitingAppointments,
+      waitingIndex,
+      nextWaitingAppointment,
+      prevWaitingAppointment,
+    } = this.props;
     return (
       <CalendarWrapper>
         <MainCalendar>
@@ -63,7 +68,12 @@ class Calendar extends React.Component {
         </MainCalendar>
         <RightSideBar id="drag-zone">
           {!!waitingAppointments && !!waitingAppointments.length ? (
-            <FCDragZone events={waitingAppointments} />
+            <FCDragZone
+              events={waitingAppointments}
+              index={waitingIndex}
+              nextWaitingAppointment={nextWaitingAppointment}
+              prevWaitingAppointment={prevWaitingAppointment}
+            />
           ) : (
             ''
           )}
@@ -81,6 +91,9 @@ class Calendar extends React.Component {
 Calendar.propTypes = {
   waitingAppointments: PropTypes.any,
   loadWaitingAppointments: PropTypes.func,
+  waitingIndex: PropTypes.number,
+  nextWaitingAppointment: PropTypes.func,
+  prevWaitingAppointment: PropTypes.func,
 };
 
 export default Calendar;

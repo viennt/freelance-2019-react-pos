@@ -42,6 +42,11 @@ const makeSelectWaitingAppointments = () =>
     appointmentState.getIn(['appointments', 'waiting']),
   );
 
+const makeSelectWaitingIndexAppointments = () =>
+  createSelector(currentAppointment, appointmentState =>
+    appointmentState.getIn(['appointments', 'waitingIndex']),
+  );
+
 const makeSelectCalendarAppointments = () =>
   createSelector(currentAppointment, appointmentState =>
     appointmentState.getIn(['appointments', 'calendar']),
@@ -66,6 +71,7 @@ export {
   makeSelectMembers,
   makeSelectDisplayedMembers,
   makeSelectWaitingAppointments,
+  makeSelectWaitingIndexAppointments,
   makeSelectCalendarAppointments,
   makeSelectAppointment,
   makeSelectFCEvent,

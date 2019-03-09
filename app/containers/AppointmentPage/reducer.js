@@ -31,6 +31,8 @@ import {
   SELECT_APPOINTMENT,
   DESELECT_APPOINTMENT,
   NEXT_STATUS_APPOINTMENT,
+  NEXT_WAITING_APPOINTMENT,
+  PREV_WAITING_APPOINTMENT,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -60,6 +62,7 @@ export const initialState = fromJS({
   appointments: {
     calendar: [],
     waiting: [],
+    waitingIndex: 0,
   },
 });
 
@@ -136,6 +139,16 @@ function appointmentReducer(state = initialState, action) {
       return state.setIn(['appointments', 'waiting'], action.appointments);
     case LOAD_WAITING_APPOINTMENT_ERROR:
       return state.set('error', action.error);
+    case NEXT_WAITING_APPOINTMENT:
+      return state.updateIn(
+        ['appointments', 'waitingIndex'],
+        index => index + 1,
+      );
+    case PREV_WAITING_APPOINTMENT:
+      return state.updateIn(
+        ['appointments', 'waitingIndex'],
+        index => index - 1,
+      );
 
     case LOAD_APPOINTMENTS_BY_MEMBERS:
       return state.setIn(['appointments', 'calendar'], []);
