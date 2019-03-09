@@ -182,6 +182,15 @@ function appointmentReducer(state = initialState, action) {
 
           return [...arr];
         })
+        .updateIn(['members', 'all'], arr => {
+          const assignedMember = arr.find(
+            member => member.id === action.appointment.memberId,
+          );
+          if (assignedMember) {
+            assignedMember.numberOfAppointments -= 1;
+          }
+          return [...arr];
+        })
         .updateIn(['appointments', 'waiting'], arr => [
           {
             ...action.appointment,

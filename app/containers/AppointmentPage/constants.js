@@ -80,7 +80,8 @@ export const MAIN_CALENDAR_OPTIONS = {
     );
     if (
       (!!override && override.id !== event.data.id) ||
-      event.start.isBefore(moment())
+      event.start.isBefore(moment()) ||
+      event.data.status === 'PAID'
     ) {
       revertFunc();
     } else {
@@ -111,12 +112,22 @@ export const MAIN_CALENDAR_OPTIONS = {
     ) {
       /* eslint no-underscore-dangle: ["error", { "allow": ["_id"] }] */
       $('#full-calendar').fullCalendar('removeEvents', event._id);
-      store.dispatch(putBackAppointment(event.data));
+      const displayedMembers = store
+        .getState()
+        .getIn(['appointment', 'appointments', 'calendar']);
+      const override = displayedMembers[event.resourceId];
+      store.dispatch(
+        putBackAppointment({
+          ...event.data,
+          memberId: override.memberId,
+        }),
+      );
       setTimeout(() => {
         function handleDrag() {
           const eventInformation = $(this).data('event-information');
           $(this).data('event', {
             data: eventInformation,
+            color: '#ffe400',
             stick: true,
           });
 

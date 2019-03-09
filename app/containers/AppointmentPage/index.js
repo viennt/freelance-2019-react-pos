@@ -9,6 +9,8 @@ import injectSaga from 'utils/injectSaga';
 import ResourceSelectorContainer from './ResourceSelectorContainer';
 import CalendarContainer from './CalendarContainer';
 import DaySelectorContainer from './DaySelectorContainer';
+// import Appointment from 'components/Appointment';
+import AppointmentContainer from './AppointmentContainer';
 
 import GlobalStyle from '../../global-styles';
 
@@ -31,6 +33,8 @@ export class AppointmentPage extends React.PureComponent {
         <ResourceSelectorContainer />
         <CalendarContainer />
         <DaySelectorContainer />
+        {/* <Appointment /> */}
+        <AppointmentContainer />
         <GlobalStyle />
       </AppointmentPageWrapper>
     );

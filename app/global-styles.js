@@ -30,6 +30,22 @@ const GlobalStyle = createGlobalStyle`
   :focus {
     outline: none;
   }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  thead {
+    background: #585858;
+    color: #ffffff;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 0.5rem;
+  }
 
   // ############################################
   // Main calendar - Fullcalendar
