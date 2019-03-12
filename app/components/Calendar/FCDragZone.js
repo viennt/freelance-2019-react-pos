@@ -3,27 +3,21 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import $ from 'jquery';
 import 'jquery-ui';
-import { FaCaretDown, FaCaretUp } from 'react-icons/fa';
 
 const DragZoneWrapper = styled.div`
   height: calc(100vh - 4rem - 4rem - 4rem);
   //overflow: hidden;
+
+  #waiting-events {
+    height: 100%;
+    overflow: scroll;
+  }
 `;
 
 const EventWrapper = styled.div`
   background: #f4f4f5;
   border: 1px solid #ffffff;
   color: #333333;
-`;
-
-const Button = styled.button`
-  background: ${props => (props.disabled ? '#dddddd' : '#0071c5')};
-  color: #ffffff;
-  width: 100%;
-  font-size: 1rem;
-  line-height: 1.5;
-  cursor: ${props => (props.disabled ? 'initial' : 'pointer')};
-  text-align: center;
 `;
 
 function handleDrag() {
@@ -35,6 +29,9 @@ function handleDrag() {
   });
 
   $(this).draggable({
+    containment: 'document',
+    helper: 'clone',
+    appendTo: 'body',
     zIndex: 999,
     revert: true,
     revertDuration: 0,
@@ -48,26 +45,12 @@ class FCDragZone extends React.PureComponent {
     }, 500);
   }
 
-  nextSlide() {
-    const { nextWaitingAppointment } = this.props;
-    nextWaitingAppointment();
-  }
-
-  prevSlide() {
-    const { prevWaitingAppointment } = this.props;
-    prevWaitingAppointment();
-  }
-
   render() {
-    const { events, index } = this.props;
-    const displayedEvents = events.slice(index, index + 3);
+    const { events } = this.props;
     return (
       <DragZoneWrapper>
-        <Button disabled={index <= 0} onClick={() => this.prevSlide()}>
-          <FaCaretUp />
-        </Button>
         <div id="waiting-events">
-          {displayedEvents.map(event => (
+          {events.map(event => (
             <EventWrapper
               className="app-event"
               key={event.id}
@@ -82,12 +65,6 @@ class FCDragZone extends React.PureComponent {
             </EventWrapper>
           ))}
         </div>
-        <Button
-          disabled={index >= events.length - 3}
-          onClick={() => this.nextSlide()}
-        >
-          <FaCaretDown />
-        </Button>
       </DragZoneWrapper>
     );
   }
@@ -95,9 +72,6 @@ class FCDragZone extends React.PureComponent {
 
 FCDragZone.propTypes = {
   events: PropTypes.any,
-  index: PropTypes.number,
-  nextWaitingAppointment: PropTypes.func,
-  prevWaitingAppointment: PropTypes.func,
 };
 
 export default FCDragZone;
