@@ -128,16 +128,4 @@ export const members = [
     orderNumber: 8,
     appointments: [],
   },
-  {
-    id: 10,
-    appointments: [],
-  },
-  {
-    id: 11,
-    appointments: [],
-  },
-  {
-    id: 12,
-    appointments: [],
-  },
 ];
