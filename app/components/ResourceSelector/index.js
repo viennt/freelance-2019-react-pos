@@ -47,11 +47,15 @@ const ResourceWrapper = styled.div`
   height: calc(4rem - 2px);
   position: relative;
   border-left: 1px solid #3883bb;
+  display: flex;
 `;
 
 const Resource = styled.div`
-  text-align: center;
+  width: calc(100% / 6);
   padding: 0.25rem;
+  position: relative;
+  border-right: 1px solid #ddd;
+  text-align: center;
 `;
 
 Resource.Avatar = styled.div`
@@ -114,6 +118,19 @@ const WaitingHeader = styled.div`
   border-left: 1px solid #3883bb;
 `;
 
+function chunk(array, size) {
+  const chunkedArr = [];
+  for (let i = 0; i < array.length; i += 1) {
+    const last = chunkedArr[chunkedArr.length - 1];
+    if (!last || last.length === size) {
+      chunkedArr.push([array[i]]);
+    } else {
+      last.push(array[i]);
+    }
+  }
+  return chunkedArr;
+}
+
 class ResourceSelector extends React.Component {
   componentWillMount() {
     const { loadMembers } = this.props;
@@ -130,7 +147,7 @@ class ResourceSelector extends React.Component {
 
   afterSlide(index) {
     const { resources, setDisplayedMembers } = this.props;
-    setDisplayedMembers(resources.slice(index, index + 6));
+    setDisplayedMembers(resources.slice(index * 6, index * 6 + 6));
   }
 
   onTodayClick() {
@@ -138,12 +155,12 @@ class ResourceSelector extends React.Component {
     onChangeToday(moment().format('DDMMYYYY'));
   }
 
-  renderResource(resource) {
+  renderResource(resource, index) {
     const { calendarMembers } = this.props;
     const member = calendarMembers.find(mem => mem.memberId === resource.id);
     const numberOfAppointments = member ? member.appointments.length : 0;
     return (
-      <>
+      <Resource key={index}>
         <Resource.Avatar>
           <img src={resource.imageUrl} alt={resource.orderNumber} />
         </Resource.Avatar>
@@ -151,14 +168,16 @@ class ResourceSelector extends React.Component {
           {resource.orderNumber}
         </Resource.OrderNumber>
         <Resource.Title>{resource.title}</Resource.Title>
-      </>
+      </Resource>
     );
   }
 
-  renderResources(resource, index) {
+  renderResources(resources, index) {
     return (
       <ResourceWrapper key={index}>
-        <Resource>{this.renderResource(resource)}</Resource>
+        {resources.map((resource, indexS) =>
+          this.renderResource(resource, indexS),
+        )}
       </ResourceWrapper>
     );
   }
@@ -175,12 +194,13 @@ class ResourceSelector extends React.Component {
 
   renderCarouselSlide() {
     const { loading, resources } = this.props;
+    console.log(chunk(resources, 6));
     if (loading) {
       return [1, 2, 3, 4, 5, 6].map(index =>
         this.renderLoadingResources(index),
       );
     }
-    return resources.map((resource, index) =>
+    return chunk(resources, 6).map((resource, index) =>
       this.renderResources(resource, index),
     );
   }
@@ -196,7 +216,6 @@ class ResourceSelector extends React.Component {
         <ResourceSliderWrapper>
           <Carousel
             dragging={false}
-            slidesToShow={6}
             renderBottomCenterControls={() => ''}
             renderCenterLeftControls={({ previousSlide }) => (
               <PrevButton onClick={ev => this.onPrevClick(ev, previousSlide)}>
