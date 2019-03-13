@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Popup from 'reactjs-popup';
-import { FaGreaterThan, FaTimesCircle } from 'react-icons/fa';
+import { FaTimesCircle } from 'react-icons/fa';
+import Enter from '../../images/enter.png';
 
 const AppPopup = styled(Popup)`
   border-radius: 1.5rem;
@@ -113,6 +114,14 @@ AddingWrapper.Footer = styled(AppPopupWrapper.Footer)`
 // ************************************************* //
 // ************************************************* //
 
+const Img = styled.img`
+  filter: invert(100%);
+`;
+
+const Label = styled.div`
+  margin-bottom: 1rem;
+`;
+
 const Form = styled.form`
   width: 100%;
   text-align: center;
@@ -125,7 +134,7 @@ const Form = styled.form`
     }
   }
 
-  & > input {
+  input {
     width: 100%;
     background: #ffffff;
     border: 1px solid #dddddd;
@@ -136,7 +145,7 @@ const Form = styled.form`
     text-align: center;
 
     &.w-50 {
-      width: 50%;
+      width: 48%;
     }
   }
 `;
@@ -160,6 +169,10 @@ const NoteWrapper = styled.div`
   padding: 0.5rem;
   overflow-x: scroll;
   height: 10rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 NoteWrapper.Form = styled.form`
@@ -258,25 +271,29 @@ class AddAppointment extends React.Component {
               Add Appointment
             </AddingWrapper.Header>
             <AddingWrapper.Body>
-              <div>Phone number is not exist ! Get information !</div>
               <Form onSubmit={e => e.preventDefault()}>
+                <Label>Phone number is not exist ! Get information !</Label>
                 <input value={this.state.phoneNumber} type="number" disabled />
               </Form>
               <Form className="left" onSubmit={e => e.preventDefault()}>
-                <div>Customer Name</div>
-                <input placeholder="First Name" className="w-50" />
-                <input placeholder="Last Name" className="w-50" />
-                <div>Referrer Phone Number</div>
+                <Label>Customer Name</Label>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <input placeholder="First Name" className="w-50" />
+                  <input placeholder="Last Name" className="w-50" />
+                </div>
+              </Form>
+              <Form className="left" onSubmit={e => e.preventDefault()}>
+                <Label>Referrer Phone Number</Label>
                 <input placeholder="0123 123 123" />
               </Form>
               <NoteWrapper>
+                <Label>Note:</Label>
                 <NoteWrapper.Form onSubmit={e => e.preventDefault()}>
-                  <input
-                    value={this.state.noteValue}
-                    onChange={e => this.handleChange(e)}
-                  />
+                  <input value={this.state.noteValue} />
                   <button type="submit">
-                    <FaGreaterThan />
+                    <Img src={Enter} alt="icon" />
                   </button>
                 </NoteWrapper.Form>
               </NoteWrapper>

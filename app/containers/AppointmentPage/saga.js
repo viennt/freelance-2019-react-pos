@@ -110,18 +110,17 @@ export function* getAppointmentsByMembersAndDate() {
   const currentDate = yield select(makeCurrentDay());
 
   const requestURL = new URL(GET_APPOINTMENTS_BY_MEMBERS_DATE_API);
+  const queryDate =
+    currentDate.format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
   displayedMembers.forEach(member => {
     requestURL.searchParams.append('memberId', member.id);
   });
-  requestURL.searchParams.append(
-    'start_like',
-    currentDate.format('YYYY-MM-DD') || moment().format('YYYY-MM-DD'),
-  );
+  requestURL.searchParams.append('start_like', queryDate);
 
   try {
     const appointments =
       process.env.NODE_ENV === 'production'
-        ? mockedAppointments
+        ? mockedAppointments.filter(app => app.start.startWith(queryDate))
         : yield call(request, requestURL.toString());
     const appointmentsMembers = displayedMembers.map(member => ({
       memberId: member.id,

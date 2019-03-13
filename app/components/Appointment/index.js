@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Popup from 'reactjs-popup';
 import moment from 'moment';
-import { FaGreaterThan, FaTimesCircle } from 'react-icons/fa';
+import { FaTimesCircle } from 'react-icons/fa';
+import Enter from '../../images/enter.png';
 
 const AppPopup = styled(Popup)`
   border-radius: 1.5rem;
@@ -172,6 +173,10 @@ const Button = styled.button`
   cursor: pointer;
   text-align: center;
   padding: 0 2rem;
+`;
+
+const Img = styled.img`
+  filter: invert(100%);
 `;
 
 // ************************************************* //
@@ -510,7 +515,7 @@ class Appointment extends React.Component {
             onChange={e => this.handleChange(e)}
           />
           <button type="submit">
-            <FaGreaterThan />
+            <Img src={Enter} alt="icon" />
           </button>
         </NoteWrapper.Form>
         {notes.map(this.renderNote)}
