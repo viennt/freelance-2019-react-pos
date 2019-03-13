@@ -40,7 +40,9 @@ function handleDrag() {
 
 class FCDragZone extends React.PureComponent {
   componentDidMount() {
+    // setInterval(() => {
     $('#waiting-events > div').each(handleDrag);
+    // }, 500);
   }
 
   render() {

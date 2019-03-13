@@ -58,12 +58,12 @@ export const MAIN_CALENDAR_OPTIONS = {
     const displayedMembers = store
       .getState()
       .getIn(['appointment', 'appointments', 'calendar']);
-    const isOverride = displayedMembers[resourceId].appointments.findIndex(
-      appointment => {
+    const isOverride =
+      displayedMembers[resourceId] &&
+      displayedMembers[resourceId].appointments.findIndex(appointment => {
         const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
         return Math.abs(date.diff(appTime, 'minute')) < 90;
-      },
-    );
+      });
     if (isOverride >= 0 || date.isBefore(moment())) {
       // Remove added event out of calendar
       $('#full-calendar').fullCalendar(
