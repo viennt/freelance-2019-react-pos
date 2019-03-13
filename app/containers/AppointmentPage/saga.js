@@ -265,13 +265,26 @@ export function* putBackAppointment(action) {
 
 export function* nextStatusAppointment() {
   const fcEvent = yield select(makeSelectFCEvent());
+  console.log(fcEvent);
+  let color;
   if (fcEvent) {
     const { status } = fcEvent.data;
-    if (status === 'ASSIGNED') fcEvent.color = '#ffe400';
-    if (status === 'CONFIRMED') fcEvent.color = '#98e6f8';
-    if (status === 'CHECKED_IN') fcEvent.color = '#00b4f7';
-    if (status === 'PAID') fcEvent.color = '#00dc00';
-    $('#full-calendar').fullCalendar('updateEvent', fcEvent);
+    if (status === 'ASSIGNED') {
+      color = '#ffe400';
+    }
+    if (status === 'CONFIRMED' || fcEvent.color === '#ffe400') {
+      color = '#98e6f8';
+    }
+    if (status === 'CHECKED_IN' || fcEvent.color === '#98e6f8') {
+      color = '#00b4f7';
+    }
+    if (status === 'PAID' || fcEvent.color === '#00b4f7') {
+      color = '#00dc00';
+    }
+    $('#full-calendar').fullCalendar('updateEvent', {
+      ...fcEvent,
+      color,
+    });
     yield put(deselectAppointment());
   }
 }
