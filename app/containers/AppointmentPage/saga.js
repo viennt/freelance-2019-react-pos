@@ -120,7 +120,7 @@ export function* getAppointmentsByMembersAndDate() {
   try {
     const appointments =
       process.env.NODE_ENV === 'production'
-        ? mockedAppointments.filter(app => app.start.startWith(queryDate))
+        ? mockedAppointments
         : yield call(request, requestURL.toString());
     const appointmentsMembers = displayedMembers.map(member => ({
       memberId: member.id,
