@@ -148,6 +148,8 @@ export function* getAppointmentsByMembersAndDate() {
           start: appointment.start,
           data: appointment,
           color: eventColor,
+          startEditable: !(appointment.status === 'PAID'),
+          resourceEditable: !(appointment.status === 'PAID'),
         });
       });
     });
@@ -265,8 +267,9 @@ export function* putBackAppointment(action) {
 
 export function* nextStatusAppointment() {
   const fcEvent = yield select(makeSelectFCEvent());
-  console.log(fcEvent);
   let color;
+  let startEditable = true;
+  let resourceEditable = true;
   if (fcEvent) {
     const { status } = fcEvent.data;
     if (status === 'ASSIGNED') {
@@ -280,10 +283,14 @@ export function* nextStatusAppointment() {
     }
     if (status === 'PAID' || fcEvent.color === '#00b4f7') {
       color = '#00dc00';
+      startEditable = false;
+      resourceEditable = false;
     }
     $('#full-calendar').fullCalendar('updateEvent', {
       ...fcEvent,
       color,
+      startEditable,
+      resourceEditable,
     });
     yield put(deselectAppointment());
   }
