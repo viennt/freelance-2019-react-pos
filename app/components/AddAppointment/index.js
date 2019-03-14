@@ -199,11 +199,27 @@ NoteWrapper.Form = styled.form`
   }
 `;
 
+const NoteInformation = styled.div`
+  display: flex;
+  padding: 0.5rem;
+
+  & > div:nth-child(1),
+  & > div:nth-child(2) {
+    width: 20%;
+  }
+
+  & > div:last-child {
+    width: 60%;
+  }
+`;
+
 class AddAppointment extends React.Component {
   state = {
     isOpenSearchingPopup: true,
     isOpenAddingPopup: false,
     phoneNumber: '',
+    noteValue: '',
+    notes: [],
   };
 
   closeAllModal() {
@@ -228,8 +244,27 @@ class AddAppointment extends React.Component {
     this.setState({ phoneNumber: e.target.value });
   }
 
+  handleSubmitNote(e) {
+    e.preventDefault();
+    // TODO: Call api for notes here
+  }
+
+  handleChangeNote(e) {
+    this.setState({ noteValue: e.target.value });
+  }
+
+  renderNote = (note, index) => (
+    <NoteInformation key={index}>
+      <div>
+        <strong>{note.date}</strong>
+      </div>
+      <div>{note.name}</div>
+      <div>{note.content}</div>
+    </NoteInformation>
+  );
+
   render() {
-    const { isOpenSearchingPopup, isOpenAddingPopup } = this.state;
+    const { isOpenSearchingPopup, isOpenAddingPopup, notes } = this.state;
     const { appointment } = this.props;
     if (!appointment) return '';
     return (
@@ -290,8 +325,12 @@ class AddAppointment extends React.Component {
               </Form>
               <NoteWrapper>
                 <Label>Note:</Label>
-                <NoteWrapper.Form onSubmit={e => e.preventDefault()}>
-                  <input value={this.state.noteValue} />
+                {notes.map(this.renderNote)}
+                <NoteWrapper.Form onSubmit={e => this.handleSubmitNote(e)}>
+                  <input
+                    value={this.state.noteValue}
+                    onChange={e => this.handleChangeNote(e)}
+                  />
                   <button type="submit">
                     <Img src={Enter} alt="icon" />
                   </button>

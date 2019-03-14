@@ -220,19 +220,19 @@ class Appointment extends React.Component {
       {
         name: 'Service 2',
         price: 50,
-        duration: 30,
+        duration: 15,
       },
       {
         name: 'Service 3',
         price: 50,
-        duration: 90,
+        duration: 15,
       },
     ],
     products: [
       {
         name: 'Product 1',
         price: 20,
-        amount: 1,
+        amount: 5,
       },
       {
         name: 'Product 2',
@@ -427,31 +427,34 @@ class Appointment extends React.Component {
     );
   }
 
-  renderService = (service, index) => (
-    <tr key={index}>
-      <td>{service.name}</td>
-      <td style={{ textAlign: 'center' }}>
-        <AdjustButton
-          active={service.duration > 15}
-          disabled={service.duration <= 15}
-          onClick={() => this.subtractService(index)}
-        >
-          -15&#39;
-        </AdjustButton>
-        {service.duration}
-        <AdjustButton
-          active={service.duration < 90}
-          disabled={service.duration >= 90}
-          onClick={() => this.addService(index)}
-        >
-          +15&#39;
-        </AdjustButton>
-      </td>
-      <td style={{ textAlign: 'center' }}>
-        {service.price * (service.duration / 15)}
-      </td>
-    </tr>
-  );
+  renderService(service, index) {
+    const { appointment } = this.props;
+    return (
+      <tr key={index}>
+        <td>{service.name}</td>
+        <td style={{ textAlign: 'center' }}>
+          <AdjustButton
+            active={appointment.status !== 'PAID' && service.duration > 15}
+            disabled={appointment.status === 'PAID' || service.duration <= 15}
+            onClick={() => this.subtractService(index)}
+          >
+            -15&#39;
+          </AdjustButton>
+          {service.duration}
+          <AdjustButton
+            active={appointment.status !== 'PAID' && service.duration < 90}
+            disabled={appointment.status === 'PAID' || service.duration >= 90}
+            onClick={() => this.addService(index)}
+          >
+            +15&#39;
+          </AdjustButton>
+        </td>
+        <td style={{ textAlign: 'center' }}>
+          {service.price * (service.duration / 15)}
+        </td>
+      </tr>
+    );
+  }
 
   renderServices() {
     const { services } = this.state;
@@ -466,34 +469,39 @@ class Appointment extends React.Component {
             <th style={{ textAlign: 'center' }}>Price ($)</th>
           </tr>
         </thead>
-        <tbody>{services.map(this.renderService)}</tbody>
+        <tbody>{services.map((s, i) => this.renderService(s, i))}</tbody>
       </table>
     );
   }
 
-  renderProduct = (product, index) => (
-    <tr key={index}>
-      <td>{product.name}</td>
-      <td style={{ textAlign: 'center' }}>
-        <AdjustButton
-          active={product.amount > 1}
-          disabled={product.amount <= 1}
-          onClick={() => this.subtractProduct(index)}
-        >
-          -
-        </AdjustButton>
-        {product.amount}
-        <AdjustButton
-          active={product.amount < 5}
-          disabled={product.amount >= 5}
-          onClick={() => this.addProduct(index)}
-        >
-          +
-        </AdjustButton>
-      </td>
-      <td style={{ textAlign: 'center' }}>{product.price * product.amount}</td>
-    </tr>
-  );
+  renderProduct(product, index) {
+    const { appointment } = this.props;
+    return (
+      <tr key={index}>
+        <td>{product.name}</td>
+        <td style={{ textAlign: 'center' }}>
+          <AdjustButton
+            active={appointment.status !== 'PAID' && product.amount > 1}
+            disabled={appointment.status === 'PAID' || product.amount <= 1}
+            onClick={() => this.subtractProduct(index)}
+          >
+            -
+          </AdjustButton>
+          {product.amount}
+          <AdjustButton
+            active={appointment.status !== 'PAID' && product.amount < 5}
+            disabled={appointment.status === 'PAID' || product.amount >= 5}
+            onClick={() => this.addProduct(index)}
+          >
+            +
+          </AdjustButton>
+        </td>
+        <td style={{ textAlign: 'center' }}>
+          {product.price * product.amount}
+        </td>
+      </tr>
+    );
+  }
 
   renderProducts() {
     const { products } = this.state;
@@ -508,7 +516,7 @@ class Appointment extends React.Component {
             <th style={{ textAlign: 'center' }}>Price ($)</th>
           </tr>
         </thead>
-        <tbody>{products.map(this.renderProduct)}</tbody>
+        <tbody>{products.map((p, i) => this.renderProduct(p, i))}</tbody>
       </table>
     );
   }
