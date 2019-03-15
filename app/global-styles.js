@@ -94,7 +94,9 @@ const GlobalStyle = createGlobalStyle`
     margin-top: -10px;
     padding: 1px 10px;
     z-index: 9;
-}
+  }
+
+  .fc-time-grid-container::-webkit-scrollbar { width: 0 !important }
   
   // ############################################
   // Main calendar - App Event

@@ -527,7 +527,9 @@ class Appointment extends React.Component {
         <strong>{note.date}</strong>
       </div>
       <div>{note.name}</div>
-      <div>{note.content}</div>
+      <div>
+        <i>{note.content}</i>
+      </div>
     </NoteInformation>
   );
 
