@@ -2,20 +2,20 @@ import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import Appointment from 'components/Appointment';
+import DetailAppointment from 'components/DetailAppointment';
 
 import { makeSelectAppointment } from './selectors';
 import {
   cancelAppointment,
   deselectAppointment,
-  nextStatusAppointment,
+  updateStatusAppointment,
 } from './actions';
 
 export function mapDispatchToProps(dispatch) {
   return {
     deselectAppointment: () => dispatch(deselectAppointment()),
     cancelAppointment: id => dispatch(cancelAppointment(id)),
-    nextStatus: id => dispatch(nextStatusAppointment(id)),
+    nextStatus: id => dispatch(updateStatusAppointment(id)),
   };
 }
 
@@ -31,4 +31,4 @@ const withConnect = connect(
 export default compose(
   //
   withConnect,
-)(Appointment);
+)(DetailAppointment);

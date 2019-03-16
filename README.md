@@ -7,11 +7,7 @@ cd <YOUR_PROJECT_NAME>
 ```bash
 npm install
 ```
-##### 3. Start mock api server
-```bash
-npm run mock:server
-```
-##### 4. Start application
+##### 3. Start application
 ```bash
 npm start
 ```
@@ -27,10 +23,10 @@ Starts the development server and makes your application accessible at: http://l
 Update api Endpoint at
 File: **/app-constants.js**
 ```javascript
-export const MOCK_API_PORT = 8010;
-export const API_BASE_URL = `http://localhost:${MOCK_API_PORT}`;
+export const API_PORT = 8010;
+export const DEV_API_BASE_URL = `http://localhost:${API_PORT}`;
+export const PROD_API_BASE_URL = `http://api.example.com`;
 ```
-
 
 Then run
 ```bash
@@ -44,52 +40,47 @@ Upload the contents of build to your web server to see your work live!
 
 ## Data Document
 
-File: **/app-constants.js**
-
-### Detail API:
-##### 1. Get all members of system:
-- Method: GET
-- Endpoint: /members
-- Sample Response (json)
+### 1. Get all members of system:
+Config at: /app-constants.js
+```javascript
+export const GET_MEMBERS_API = `${API_BASE_URL}/members`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* getMembers() {
+  // ...
+}
+```
+Sample Response (json)
 ```json
 [
   {
     "id": 1,
     "title": "Baby",
     "imageUrl": "https://s3.amazonaws.com/uifaces/faces/twitter/BroumiYoussef/128.jpg",
-    "orderNumber": 2,
-    "appointments": [
-      {
-        "id": 30,
-        "userFullName": "Rebekah Purdy",
-        "phoneNumber": "0798 137 212",
-        "option1": "Full set",
-        "option2": "Get",
-        "option3": "Pill others",
-        "status": "ASSIGNED",
-        "memberId": 1,
-        "start": "2019-03-04T07:00:00"
-      },
-      {
-        "id": 60,
-        "userFullName": "Rickie Medhurst",
-        "phoneNumber": "0525 896 423",
-        "option1": "Full set",
-        "option2": "Get",
-        "option3": "Pill others",
-        "status": "CONFIRMED",
-        "memberId": 1,
-        "start": "2019-03-03T08:30:00"
-      }
-    ]
+    "orderNumber": 2
+  },
+  {
+    "id": 2,
+    "title": "Keely",
+    "imageUrl": "https://s3.amazonaws.com/uifaces/faces/twitter/lowie/128.jpg",
+    "orderNumber": 1
   }
 ]
 ```
 
-##### 2. Get waiting appointmemts:
-- Method: GET
-- Endpoint: /appointments?status=WAITING
-- Sample Response (json)
+### 2. Get waiting appointmemts:
+Config at: /app-constants.js
+```javascript
+export const GET_WAITING_APPOINTMENTS_API = `${API_BASE_URL}/appointments`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* getWaitingAppointments() {
+  // ...
+}
+```
+Sample Response (json)
 ```json
 [
   {
@@ -110,22 +101,30 @@ File: **/app-constants.js**
     "option1": "Full set",
     "option2": "Get",
     "option3": "Pill others",
-    "status": "ASSIGNED",
+    "status": "WAITING",
     "memberId": 1,
     "start": "2019-03-04T07:00:00"
   }
 ]
 ```
 
-##### 3. Get appointmemts by members and date:
-- Method: GET
-- Endpoint: /appointments?memberId=1&memberId=2&start_like=2019-03-03
-- Sample Response (json)
+### 3. Get appointmemts by members and date:
+Config at: /app-constants.js
+```javascript
+export const GET_APPOINTMENTS_BY_MEMBERS_DATE_API = `${API_BASE_URL}/appointments`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* getAppointmentsByMembersAndDate() {
+  // ...
+}
+```
+Sample Response (json)
 ```json
 [
   {
-    "id": 30,
-    "userFullName": "Rebekah Purdy",
+    "id": 31,
+    "userFullName": "Debe David",
     "phoneNumber": "0798 137 212",
     "option1": "Full set",
     "option2": "Get",
@@ -137,20 +136,130 @@ File: **/app-constants.js**
 ]
 ```
 
-##### 4. Get assign appointment to member:
-- Method: POST
-- Endpoint: /appointments
-- Body (json)
+### 4. Post assigning an appointment to member:
+Config at: /app-constants.js
+```javascript
+export const POST_ASSIGN_APPOINTMENT_API = `${API_BASE_URL}/appointments/assign`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* assignAppointment() {
+  // ...
+}
+```
+Body (json)
 ```json
 {
   "memberId": 1,
   "appointmentId": 12
 }
 ```
-- Sample Response (json)
+Sample Response (json)
 ```json
 {
   "result": "success",
   "message": "Assign appointment successfully!"
+}
+```
+
+### 5. Post moving an appointment to another member:
+Config at: /app-constants.js
+```javascript
+export const POST_MOVE_APPOINTMENT_API = `${API_BASE_URL}/appointments/move`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* moveAppointment() {
+  // ...
+}
+```
+Body (json)
+```json
+{
+  "memberId": 1,
+  "appointmentId": 12
+}
+```
+Sample Response (json)
+```json
+{
+  "result": "success",
+  "message": "Move appointment successfully!"
+}
+```
+
+### 6. Post putting back an appointment to waiting list:
+Config at: /app-constants.js
+```javascript
+export const POST_PUT_BACK_APPOINTMENT_API = `${API_BASE_URL}/appointments/back`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* putBackAppointment() {
+  // ...
+}
+```
+Body (json)
+```json
+{
+  "appointmentId": 12
+}
+```
+Sample Response (json)
+```json
+{
+  "result": "success",
+  "message": "Move appointment successfully!"
+}
+```
+
+### 7. Post cancelling an appointment:
+Config at: /app-constants.js
+```javascript
+export const POST_CANCEL_APPOINTMENT_API = `${API_BASE_URL}/appointments/cancel`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* cancelAppointment() {
+  // ...
+}
+```
+Body (json)
+```json
+{
+  "appointmentId": 12
+}
+```
+Sample Response (json)
+```json
+{
+  "result": "success",
+  "message": "Cancel appointment successfully!"
+}
+```
+
+### 7. Post updating status an appointment:
+Config at: /app-constants.js
+```javascript
+export const POST_STATUS_APPOINTMENT_API = `${API_BASE_URL}/appointments/status`;
+```
+Handle response at: /app/containers/AppointmentPage/saga.js
+```javascript
+export function* updateStatusAppointment() {
+  // ...
+}
+```
+Body (json)
+```json
+{
+  "appointmentId": 12,
+  "status": "PAID"
+}
+```
+Sample Response (json)
+```json
+{
+  "result": "success",
+  "message": "Update status appointment successfully!"
 }
 ```

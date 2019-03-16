@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import FCAgenda from './FCAgenda';
 import FCDragZone from './FCDragZone';
 
-import { MAIN_CALENDAR_OPTIONS } from '../../containers/AppointmentPage/constants';
+import { MAIN_CALENDAR_OPTIONS } from './constants';
 
 const CalendarWrapper = styled.div`
   display: flex;
@@ -58,8 +58,6 @@ class Calendar extends React.Component {
     const {
       waitingAppointments,
       waitingIndex,
-      nextWaitingAppointment,
-      prevWaitingAppointment,
       openAddingAppointment,
     } = this.props;
     return (
@@ -69,12 +67,7 @@ class Calendar extends React.Component {
         </MainCalendar>
         <RightSideBar id="drag-zone">
           {!!waitingAppointments && !!waitingAppointments.length ? (
-            <FCDragZone
-              events={waitingAppointments}
-              index={waitingIndex}
-              nextWaitingAppointment={nextWaitingAppointment}
-              prevWaitingAppointment={prevWaitingAppointment}
-            />
+            <FCDragZone events={waitingAppointments} index={waitingIndex} />
           ) : (
             ''
           )}
@@ -93,8 +86,6 @@ Calendar.propTypes = {
   waitingAppointments: PropTypes.any,
   loadWaitingAppointments: PropTypes.func,
   waitingIndex: PropTypes.number,
-  nextWaitingAppointment: PropTypes.func,
-  prevWaitingAppointment: PropTypes.func,
   openAddingAppointment: PropTypes.func,
 };
 

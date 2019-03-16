@@ -30,11 +30,10 @@ import {
   PUT_BACK_APPOINTMENT_SUCCESS,
   SELECT_APPOINTMENT,
   DESELECT_APPOINTMENT,
-  NEXT_STATUS_APPOINTMENT,
-  NEXT_WAITING_APPOINTMENT,
-  PREV_WAITING_APPOINTMENT,
   OPEN_ADDING_APPOINTMENT,
   CLOSE_ADDING_APPOINTMENT,
+  CANCEL_APPOINTMENT_SUCCESS,
+  UPDATE_STATUS_APPOINTMENT_SUCCESS,
 } from './constants';
 
 const initialCurrentDay = moment();
@@ -55,9 +54,11 @@ export const initialState = fromJS({
   error: false,
   currentDay: initialCurrentDay,
   currentWeekDays: initialWeekDays,
+
   selectedAppointment: null,
   addingAppointment: null,
   selectedFCEvent: null,
+
   members: {
     all: [],
     displayed: [],
@@ -65,7 +66,6 @@ export const initialState = fromJS({
   appointments: {
     calendar: [],
     waiting: [],
-    waitingIndex: 0,
   },
 });
 
@@ -91,36 +91,13 @@ function appointmentReducer(state = initialState, action) {
     case SELECT_APPOINTMENT:
       return state
         .set('selectedAppointment', action.appointment)
-        .set('selectedFCEvent', action.fcEvent);
+        .set('selectedFCEvent', {
+          ...action.fcEvent,
+        });
     case DESELECT_APPOINTMENT:
       return state
         .set('selectedAppointment', null)
         .set('selectedFCEvent', null);
-    case NEXT_STATUS_APPOINTMENT:
-      return state.updateIn(['appointments', 'calendar'], arr => {
-        const member = arr.find(mem =>
-          mem.appointments.find(app => app.id === action.appointmentId),
-        );
-        if (!member) return [...arr];
-
-        const appointmentIndex = member.appointments.findIndex(
-          app => app.id === action.appointmentId,
-        );
-        if (appointmentIndex < 0) return [...arr];
-
-        const { status } = member.appointments[appointmentIndex];
-        if (status === 'ASSIGNED') {
-          member.appointments[appointmentIndex].status = 'CONFIRMED';
-        }
-        if (status === 'CONFIRMED') {
-          member.appointments[appointmentIndex].status = 'CHECKED_IN';
-        }
-        if (status === 'CHECKED_IN') {
-          member.appointments[appointmentIndex].status = 'PAID';
-        }
-
-        return [...arr];
-      });
     case OPEN_ADDING_APPOINTMENT:
       return state.set('addingAppointment', action.appointment);
     case CLOSE_ADDING_APPOINTMENT:
@@ -146,16 +123,6 @@ function appointmentReducer(state = initialState, action) {
       return state.setIn(['appointments', 'waiting'], action.appointments);
     case LOAD_WAITING_APPOINTMENT_ERROR:
       return state.set('error', action.error);
-    case NEXT_WAITING_APPOINTMENT:
-      return state.updateIn(
-        ['appointments', 'waitingIndex'],
-        index => index + 1,
-      );
-    case PREV_WAITING_APPOINTMENT:
-      return state.updateIn(
-        ['appointments', 'waitingIndex'],
-        index => index - 1,
-      );
 
     case LOAD_APPOINTMENTS_BY_MEMBERS:
       return state.setIn(['appointments', 'calendar'], []);
@@ -172,15 +139,6 @@ function appointmentReducer(state = initialState, action) {
           );
           if (assignedMember) {
             assignedMember.appointments.push(action.appointment);
-          }
-          return [...arr];
-        })
-        .updateIn(['members', 'all'], arr => {
-          const assignedMember = arr.find(
-            member => member.id === action.appointment.memberId,
-          );
-          if (assignedMember) {
-            assignedMember.numberOfAppointments += 1;
           }
           return [...arr];
         })
@@ -240,15 +198,6 @@ function appointmentReducer(state = initialState, action) {
 
           return [...arr];
         })
-        .updateIn(['members', 'all'], arr => {
-          const assignedMember = arr.find(
-            member => member.id === action.appointment.memberId,
-          );
-          if (assignedMember) {
-            assignedMember.numberOfAppointments -= 1;
-          }
-          return [...arr];
-        })
         .updateIn(['appointments', 'waiting'], arr => [
           {
             ...action.appointment,
@@ -258,6 +207,52 @@ function appointmentReducer(state = initialState, action) {
           },
           ...arr,
         ]);
+
+    case CANCEL_APPOINTMENT_SUCCESS:
+      return state.updateIn(['appointments', 'calendar'], arr => {
+        const oldPosition = arr.find(member =>
+          member.appointments.find(
+            appointment => appointment.id === action.appointmentId,
+          ),
+        );
+        if (!oldPosition) return [...arr];
+
+        const movedAppointmentIndex = oldPosition.appointments.findIndex(
+          appointment => appointment.id === action.appointmentId,
+        );
+        if (movedAppointmentIndex < 0) return [...arr];
+
+        oldPosition.appointments.splice(movedAppointmentIndex, 1);
+
+        return [...arr];
+      });
+
+    case UPDATE_STATUS_APPOINTMENT_SUCCESS:
+      return state.updateIn(['appointments', 'calendar'], arr => {
+        const member = arr.find(mem =>
+          mem.appointments.find(app => app.id === action.appointmentId),
+        );
+        if (!member) return [...arr];
+
+        const appointmentIndex = member.appointments.findIndex(
+          app => app.id === action.appointmentId,
+        );
+        if (appointmentIndex < 0) return [...arr];
+
+        const { status } = member.appointments[appointmentIndex];
+        if (status === 'ASSIGNED') {
+          member.appointments[appointmentIndex].status = 'CONFIRMED';
+        }
+        if (status === 'CONFIRMED') {
+          member.appointments[appointmentIndex].status = 'CHECKED_IN';
+        }
+        if (status === 'CHECKED_IN') {
+          member.appointments[appointmentIndex].status = 'PAID';
+        }
+
+        return [...arr];
+      });
+
     default:
       return state;
   }

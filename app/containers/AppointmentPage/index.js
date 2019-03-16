@@ -6,10 +6,11 @@ import { createStructuredSelector } from 'reselect';
 
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
+
 import ResourceSelectorContainer from './ResourceSelectorContainer';
 import CalendarContainer from './CalendarContainer';
 import DaySelectorContainer from './DaySelectorContainer';
-import AppointmentContainer from './AppointmentContainer';
+import DetailAppointmentContainer from './DetailAppointmentContainer';
 import AddAppointmentContainer from './AddAppointmentContainer';
 
 import GlobalStyle from '../../global-styles';
@@ -33,7 +34,7 @@ export class AppointmentPage extends React.PureComponent {
         <ResourceSelectorContainer />
         <CalendarContainer />
         <DaySelectorContainer />
-        <AppointmentContainer />
+        <DetailAppointmentContainer />
         <AddAppointmentContainer />
         <GlobalStyle />
       </AppointmentPageWrapper>

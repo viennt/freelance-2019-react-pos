@@ -20,6 +20,8 @@ import {
   ASSIGN_APPOINTMENT_ERROR,
   ASSIGN_APPOINTMENT_SUCCESS,
   CANCEL_APPOINTMENT,
+  CANCEL_APPOINTMENT_ERROR,
+  CANCEL_APPOINTMENT_SUCCESS,
   CLOSE_ADDING_APPOINTMENT,
   DESELECT_APPOINTMENT,
   LOAD_APPOINTMENTS_BY_MEMBERS,
@@ -34,10 +36,7 @@ import {
   MOVE_APPOINTMENT,
   MOVE_APPOINTMENT_ERROR,
   MOVE_APPOINTMENT_SUCCESS,
-  NEXT_STATUS_APPOINTMENT,
-  NEXT_WAITING_APPOINTMENT,
   OPEN_ADDING_APPOINTMENT,
-  PREV_WAITING_APPOINTMENT,
   PUT_BACK_APPOINTMENT,
   PUT_BACK_APPOINTMENT_ERROR,
   PUT_BACK_APPOINTMENT_SUCCESS,
@@ -46,12 +45,15 @@ import {
   SELECT_DAY_CALENDAR,
   SELECT_WEEK,
   SET_DISPLAYED_MEMBERS,
+  UPDATE_STATUS_APPOINTMENT,
+  UPDATE_STATUS_APPOINTMENT_SUCCESS,
+  UPDATE_STATUS_APPOINTMENT_ERROR,
 } from './constants';
 
 /**
  * Select day on mini calendar or day slider
  * @param  {string} day The string with format DDMMYYYY
- * @return {object}    An action object with a type of SELECT_DAY
+ * @return {object}   An action object with a type of SELECT_DAY
  */
 export function selectDay(day) {
   return {
@@ -63,7 +65,7 @@ export function selectDay(day) {
 /**
  * Select week on day slider
  * @param  {string} dayOfWeek The string with format DDMMYYYY
- * @return {object}    An action object with a type of SELECT_DAY
+ * @return {object}   An action object with a type of SELECT_DAY
  */
 export function selectWeek(dayOfWeek) {
   return {
@@ -75,7 +77,7 @@ export function selectWeek(dayOfWeek) {
 /**
  * Select day on mini calendar
  * @param  {string} day The string with format DDMMYYYY
- * @return {object}    An action object with a type of SELECT_DAY
+ * @return {object}   An action object with a type of SELECT_DAY
  */
 export function selectDayOnCalendar(day) {
   return {
@@ -84,6 +86,12 @@ export function selectDayOnCalendar(day) {
   };
 }
 
+/**
+ * Select an appointment
+ * @param  {object} appointment The appointment was selected
+ * @param  {object} fcEvent The fcEvent was selected
+ * @return {object}   An action object with a type of SELECT_APPOINTMENT
+ */
 export function selectAppointment(appointment, fcEvent) {
   return {
     type: SELECT_APPOINTMENT,
@@ -92,26 +100,21 @@ export function selectAppointment(appointment, fcEvent) {
   };
 }
 
+/**
+ * Deselect the appointment
+ * @return {object}   An action object with a type of DESELECT_APPOINTMENT
+ */
 export function deselectAppointment() {
   return {
     type: DESELECT_APPOINTMENT,
   };
 }
 
-export function cancelAppointment(appointmentId) {
-  return {
-    type: CANCEL_APPOINTMENT,
-    appointmentId,
-  };
-}
-
-export function nextStatusAppointment(appointmentId) {
-  return {
-    type: NEXT_STATUS_APPOINTMENT,
-    appointmentId,
-  };
-}
-
+/**
+ * Open adding appointment popup
+ * @param  {object} appointment The selected appointment
+ * @return {object}   An action object with a type of OPEN_ADDING_APPOINTMENT
+ */
 export function openAddingAppointment(appointment) {
   return {
     type: OPEN_ADDING_APPOINTMENT,
@@ -119,6 +122,10 @@ export function openAddingAppointment(appointment) {
   };
 }
 
+/**
+ * Close adding appointment popup
+ * @return {object}   An action object with a type of CLOSE_ADDING_APPOINTMENT
+ */
 export function closeAddingAppointment() {
   return {
     type: CLOSE_ADDING_APPOINTMENT,
@@ -138,7 +145,7 @@ export function loadMembers() {
 /**
  * Dispatched when the members are loaded by the request saga
  * @param  {array} members The members data
- * @return {object}      An action object with a type of LOAD_MEMBERS_SUCCESS passing the members
+ * @return {object} An action object with a type of LOAD_MEMBERS_SUCCESS passing the members
  */
 export function membersLoaded(members) {
   return {
@@ -150,7 +157,7 @@ export function membersLoaded(members) {
 /**
  * Dispatched when loading the members fails
  * @param  {object} error The error
- * @return {object}       An action object with a type of LOAD_MEMBERS_ERROR passing the error
+ * @return {object} An action object with a type of LOAD_MEMBERS_ERROR passing the error
  */
 export function memberLoadingError(error) {
   return {
@@ -186,7 +193,7 @@ export function loadWaitingAppointments(options) {
 /**
  * Dispatched when the waiting appointments are loaded by the request saga
  * @param  {array} appointments The appointments data
- * @return {object}      An action object with a type of LOAD_WAITING_APPOINTMENT_SUCCESS passing the appointments
+ * @return {object} An action object with a type of LOAD_WAITING_APPOINTMENT_SUCCESS passing the appointments
  */
 export function waitingAppointmentsLoaded(appointments) {
   return {
@@ -198,24 +205,12 @@ export function waitingAppointmentsLoaded(appointments) {
 /**
  * Dispatched when loading the waiting appointments fails
  * @param  {object} error The error
- * @return {object}       An action object with a type of LOAD_WAITING_APPOINTMENT_ERROR passing the error
+ * @return {object} An action object with a type of LOAD_WAITING_APPOINTMENT_ERROR passing the error
  */
 export function waitingAppointmentLoadingError(error) {
   return {
     type: LOAD_WAITING_APPOINTMENT_ERROR,
     error,
-  };
-}
-
-export function nextWaitingAppointment() {
-  return {
-    type: NEXT_WAITING_APPOINTMENT,
-  };
-}
-
-export function prevWaitingAppointment() {
-  return {
-    type: PREV_WAITING_APPOINTMENT,
   };
 }
 
@@ -233,7 +228,7 @@ export function loadAppointmentByMembers() {
 /**
  * Dispatched when the appointment by members are loaded by the request saga
  * @param  {array} appointments The appointments data
- * @return {object}      An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS passing the members
+ * @return {object} An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS_SUCCESS passing the members
  */
 export function appointmentByMembersLoaded(appointments) {
   return {
@@ -245,7 +240,7 @@ export function appointmentByMembersLoaded(appointments) {
 /**
  * Dispatched when loading the appointment by members fails
  * @param  {object} error The error
- * @return {object}       An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS_ERROR passing the error
+ * @return {object} An action object with a type of LOAD_APPOINTMENTS_BY_MEMBERS_ERROR passing the error
  */
 export function appointmentByMemberLoadingError(error) {
   return {
@@ -269,7 +264,7 @@ export function assignAppointment(options) {
 /**
  * Dispatched when assign appointment to member by the request saga
  * @param  {object} appointment
- * @return {object}      An action object with a type of ASSIGN_APPOINTMENT_SUCCESS passing the members
+ * @return {object} An action object with a type of ASSIGN_APPOINTMENT_SUCCESS passing the members
  */
 export function appointmentAssigned(appointment) {
   return {
@@ -279,9 +274,9 @@ export function appointmentAssigned(appointment) {
 }
 
 /**
- * Dispatched when loading move appointment to member fails
+ * Dispatched when assigning appointment to member fails
  * @param  {object} error The error
- * @return {object}       An action object with a type of ASSIGN_APPOINTMENT_ERROR passing the error
+ * @return {object} An action object with a type of ASSIGN_APPOINTMENT_ERROR passing the error
  */
 export function appointmentAssigningError(error) {
   return {
@@ -291,7 +286,7 @@ export function appointmentAssigningError(error) {
 }
 
 /**
- * Assign move to member, this action starts the request saga
+ * Move to another member, this action starts the request saga
  * @param  {number} appointmentId The url options
  * @param  {number} newPositionIndex The url options
  * @param  {object} newTime The url options
@@ -309,7 +304,7 @@ export function moveAppointment(appointmentId, newPositionIndex, newTime) {
 /**
  * Dispatched when move appointment to member by the request saga
  * @param  {object} appointment
- * @return {object}      An action object with a type of MOVE_APPOINTMENT_SUCCESS passing the members
+ * @return {object} An action object with a type of MOVE_APPOINTMENT_SUCCESS passing the members
  */
 export function appointmentMoved(appointment) {
   return {
@@ -319,9 +314,9 @@ export function appointmentMoved(appointment) {
 }
 
 /**
- * Dispatched when loading move appointment to member fails
+ * Dispatched when moving appointment to member fails
  * @param  {object} error The error
- * @return {object}       An action object with a type of MOVE_APPOINTMENT_ERROR passing the error
+ * @return {object} An action object with a type of MOVE_APPOINTMENT_ERROR passing the error
  */
 export function appointmentMovingError(error) {
   return {
@@ -331,7 +326,7 @@ export function appointmentMovingError(error) {
 }
 
 /**
- * Assign put back to waiting list, this action starts the request saga
+ * Put back to waiting list, this action starts the request saga
  * @param  {object} appointment The url options
  * @return {object} An action object with a type of PUT_BACK_APPOINTMENT
  */
@@ -345,7 +340,7 @@ export function putBackAppointment(appointment) {
 /**
  * Dispatched when put back appointment to waiting list by the request saga
  * @param  {object} appointment
- * @return {object}      An action object with a type of PUT_BACK_APPOINTMENT_SUCCESS passing the members
+ * @return {object} An action object with a type of PUT_BACK_APPOINTMENT_SUCCESS passing the members
  */
 export function appointmentPutBack(appointment) {
   return {
@@ -355,13 +350,85 @@ export function appointmentPutBack(appointment) {
 }
 
 /**
- * Dispatched when loading put back appointment to waiting fails
+ * Dispatched when putting back appointment to waiting fails
  * @param  {object} error The error
- * @return {object}       An action object with a type of PUT_BACK_APPOINTMENT_ERROR passing the error
+ * @return {object} An action object with a type of PUT_BACK_APPOINTMENT_ERROR passing the error
  */
-export function appointmentPutingBackError(error) {
+export function appointmentPuttingBackError(error) {
   return {
     type: PUT_BACK_APPOINTMENT_ERROR,
+    error,
+  };
+}
+
+/**
+ * Cancel appointment, this action starts the request saga
+ * @param  {number} appointmentId The url options
+ * @return {object} An action object with a type of CANCEL_APPOINTMENT
+ */
+export function cancelAppointment(appointmentId) {
+  return {
+    type: CANCEL_APPOINTMENT,
+    appointmentId,
+  };
+}
+
+/**
+ * Dispatched when cancel appointment to waiting list by the request saga
+ * @param  {number} appointmentId
+ * @return {object} An action object with a type of CANCEL_APPOINTMENT_SUCCESS passing the members
+ */
+export function appointmentCanceled(appointmentId) {
+  return {
+    type: CANCEL_APPOINTMENT_SUCCESS,
+    appointmentId,
+  };
+}
+
+/**
+ * Dispatched when cancelling appointment to waiting fails
+ * @param  {object} error The error
+ * @return {object} An action object with a type of CANCEL_APPOINTMENT_ERROR passing the error
+ */
+export function appointmentCancellingError(error) {
+  return {
+    type: CANCEL_APPOINTMENT_ERROR,
+    error,
+  };
+}
+
+/**
+ * Update status of appointment, this action starts the request saga
+ * @param  {number} appointmentId The error
+ * @return {object} An action object with a type of UPDATE_STATUS_APPOINTMENT
+ */
+export function updateStatusAppointment(appointmentId) {
+  return {
+    type: UPDATE_STATUS_APPOINTMENT,
+    appointmentId,
+  };
+}
+
+/**
+ * Dispatched when update status of appointment to waiting list by the request saga
+ * @param  {number} appointmentId
+ * @return {object} An action object with a type of UPDATE_STATUS_APPOINTMENT_SUCCESS passing the members
+ */
+export function appointmentUpdatedStatus(appointmentId) {
+  return {
+    type: UPDATE_STATUS_APPOINTMENT_SUCCESS,
+    appointmentId,
+  };
+}
+
+/**
+ * Dispatched when updating status of appointment to waiting fails
+ * @param  {object} error The error
+ * @return {object} An action object with a type of UPDATE_STATUS_APPOINTMENT_ERROR passing the error
+ */
+export function appointmentUpdatingStatusError(error) {
+  return {
+    type: UPDATE_STATUS_APPOINTMENT_ERROR,
     error,
   };
 }
