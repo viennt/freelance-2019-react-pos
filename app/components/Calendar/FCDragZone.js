@@ -59,9 +59,11 @@ class FCDragZone extends React.PureComponent {
               <div className="app-event__id-number">#{event.id}</div>
               <div className="app-event__full-name">{event.userFullName}</div>
               <div className="app-event__phone-number">{event.phoneNumber}</div>
-              <div className="app-event__option">- {event.option1}</div>
-              <div className="app-event__option">- {event.option2}</div>
-              <div className="app-event__option">- {event.option3}</div>
+              {event.options.map(option => (
+                <div className="app-event__option" key={option.id}>
+                  - {option.name}
+                </div>
+              ))}
             </EventWrapper>
           ))}
         </div>

@@ -9,14 +9,16 @@ import {
   selectAppointment,
 } from '../../containers/AppointmentPage/actions';
 
+const EVENT_OPTION_RENDER_TEMPLATE = option => `
+  <div class="app-event__option">- ${option.name}</div>
+`;
+
 const EVENT_RENDER_TEMPLATE = event => `
   <div class="app-event">
     <div class="app-event__id-number">#${event.id}</div>
     <div class="app-event__full-name">${event.userFullName}</div>
     <div class="app-event__phone-number">${event.phoneNumber}</div>
-    <div class="app-event__option">- ${event.option1}</div>
-    <div class="app-event__option">- ${event.option2}</div>
-    <div class="app-event__option">- ${event.option3}</div>
+    ${event.options.map(option => EVENT_OPTION_RENDER_TEMPLATE(option))}
   </div>
 `;
 
