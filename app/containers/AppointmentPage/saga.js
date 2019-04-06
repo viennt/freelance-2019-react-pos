@@ -16,6 +16,8 @@ import {
   PUT_BACK_APPOINTMENT,
   UPDATE_STATUS_APPOINTMENT,
   CANCEL_APPOINTMENT,
+  UPDATE_STATUS_APPOINTMENT_SUCCESS,
+  UPDATE_CALENDAR_INTERVAL,
 } from './constants';
 import {
   selectDay,
@@ -474,7 +476,14 @@ export function* appointmentsByMembersData() {
     LOAD_APPOINTMENTS_BY_MEMBERS,
     getAppointmentsByMembersAndDate,
   );
+  yield takeLatest(
+    UPDATE_STATUS_APPOINTMENT_SUCCESS,
+    getAppointmentsByMembersAndDate,
+  );
   yield takeLatest(SELECT_DAY, getAppointmentsByMembersAndDate);
+
+  // FIXME: This is hard code for real-time calendar
+  yield takeLatest(UPDATE_CALENDAR_INTERVAL, getAppointmentsByMembersAndDate);
 }
 
 export function* displayedMembersData() {

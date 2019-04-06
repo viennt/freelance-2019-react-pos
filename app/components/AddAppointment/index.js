@@ -269,7 +269,10 @@ class AddAppointment extends React.Component {
     if (!appointment) return '';
     return (
       <div>
-        <SearchingPopup open={isOpenSearchingPopup}>
+        <SearchingPopup
+          open={isOpenSearchingPopup}
+          closeOnDocumentClick={false}
+        >
           <SearchingWrapper>
             <SearchingWrapper.Close onClick={() => this.closeAllModal()}>
               <FaTimesCircle />
@@ -297,6 +300,7 @@ class AddAppointment extends React.Component {
         <AddingPopup
           open={isOpenAddingPopup}
           onClose={() => this.closeAllModal()}
+          closeOnDocumentClick={false}
         >
           <AddingWrapper>
             <AddingWrapper.Close onClick={() => this.closeAllModal()}>

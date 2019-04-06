@@ -62,3 +62,7 @@ export const UPDATE_STATUS_APPOINTMENT_SUCCESS =
   'app/Appointment/UPDATE_STATUS_APPOINTMENT_SUCCESS';
 export const UPDATE_STATUS_APPOINTMENT_ERROR =
   'app/Appointment/UPDATE_STATUS_APPOINTMENT_ERROR';
+
+// FIXME: This is hard code for real-time calendar
+export const UPDATE_CALENDAR_INTERVAL =
+  'app/Appointment/UPDATE_STATUS_APPOINTMENT_ERROR';

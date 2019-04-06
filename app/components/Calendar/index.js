@@ -54,6 +54,14 @@ class Calendar extends React.Component {
     loadWaitingAppointments();
   }
 
+  // FIXME: This is hard code for real-time calendar
+  componentDidMount() {
+    const { updateCalendarInterval } = this.props;
+    setInterval(() => {
+      updateCalendarInterval();
+    }, 5000);
+  }
+
   render() {
     const {
       waitingAppointments,
@@ -87,6 +95,7 @@ Calendar.propTypes = {
   loadWaitingAppointments: PropTypes.func,
   waitingIndex: PropTypes.number,
   openAddingAppointment: PropTypes.func,
+  updateCalendarInterval: PropTypes.func,
 };
 
 export default Calendar;

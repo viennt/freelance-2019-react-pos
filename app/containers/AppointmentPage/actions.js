@@ -48,6 +48,7 @@ import {
   UPDATE_STATUS_APPOINTMENT,
   UPDATE_STATUS_APPOINTMENT_SUCCESS,
   UPDATE_STATUS_APPOINTMENT_ERROR,
+  UPDATE_CALENDAR_INTERVAL,
 } from './constants';
 
 /**
@@ -430,5 +431,12 @@ export function appointmentUpdatingStatusError(error) {
   return {
     type: UPDATE_STATUS_APPOINTMENT_ERROR,
     error,
+  };
+}
+
+// FIXME: This is hard code for real-time calendar
+export function updateCalendarInterval() {
+  return {
+    type: UPDATE_CALENDAR_INTERVAL,
   };
 }
