@@ -33,7 +33,8 @@ export const MAIN_CALENDAR_OPTIONS = {
   nowIndicator: true,
   slotLabelFormat: 'HH:mm A',
   slotDuration: '00:15:00',
-  defaultTimedEventDuration: '01:30:00',
+  // defaultTimedEventDuration: '01:30:00',
+  eventOverlap: false,
   minTime: '06:00:00',
   maxTime: '23:00:00',
   timezone: 'local',
@@ -56,16 +57,17 @@ export const MAIN_CALENDAR_OPTIONS = {
     store.dispatch(selectAppointment(appointment, event));
   },
   drop(date, jsEvent, ui, resourceId) {
-    const displayedMembers = store
-      .getState()
-      .getIn(['appointment', 'appointments', 'calendar']);
-    const isOverride =
-      displayedMembers[resourceId] &&
-      displayedMembers[resourceId].appointments.findIndex(appointment => {
-        const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
-        return Math.abs(date.diff(appTime, 'minute')) < 90;
-      });
-    if (isOverride >= 0 || date.isBefore(moment())) {
+    // const displayedMembers = store
+    //   .getState()
+    //   .getIn(['appointment', 'appointments', 'calendar']);
+    // const isOverride =
+    //   displayedMembers[resourceId] &&
+    //   displayedMembers[resourceId].appointments.findIndex(appointment => {
+    //     const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
+    //     return Math.abs(date.diff(appTime, 'minute')) < 90;
+    //   });
+    // if (isOverride >= 0 || date.isBefore(moment())) {
+    if (date.isBefore(moment())) {
       // Remove added event out of calendar
       $('#full-calendar').fullCalendar(
         'removeEvents',
@@ -80,6 +82,13 @@ export const MAIN_CALENDAR_OPTIONS = {
             ...event,
             status: 'ASSIGNED',
             start: `${date.format('YYYY-MM-DD')}T${date.format('HH:mm:ss')}`,
+            end: `${date
+              .clone()
+              .add('m', event.duration)
+              .format('YYYY-MM-DD')}T${date
+              .clone()
+              .add('m', event.duration)
+              .format('HH:mm:ss')}`,
           },
           resourceId,
         }),
@@ -87,17 +96,17 @@ export const MAIN_CALENDAR_OPTIONS = {
     }
   },
   eventDrop: (event, delta, revertFunc) => {
-    const displayedMembers = store
-      .getState()
-      .getIn(['appointment', 'appointments', 'calendar']);
-    const override = displayedMembers[event.resourceId].appointments.find(
-      appointment => {
-        const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
-        return Math.abs(event.start.diff(appTime, 'minute')) < 90;
-      },
-    );
+    // const displayedMembers = store
+    //   .getState()
+    //   .getIn(['appointment', 'appointments', 'calendar']);
+    // const override = displayedMembers[event.resourceId].appointments.find(
+    //   appointment => {
+    //     const appTime = moment(appointment.start, 'YYYY-MM-DDTHH:mm:ss');
+    //     return Math.abs(event.start.diff(appTime, 'minute')) < 90;
+    //   },
+    // );
     if (
-      (!!override && override.id !== event.data.id) ||
+      // (!!override && override.id !== event.data.id) ||
       event.start.isBefore(moment()) ||
       event.data.status === 'PAID'
     ) {
@@ -107,7 +116,16 @@ export const MAIN_CALENDAR_OPTIONS = {
         moveAppointment(
           event.data.id,
           event.resourceId,
-          event.start.format('YYYY-MM-DDTHH:mm:ss'),
+          `${event.start.format('YYYY-MM-DD')}T${event.start.format(
+            'HH:mm:ss',
+          )}`,
+          `${event.start
+            .clone()
+            .add('m', event.data.duration)
+            .format('YYYY-MM-DD')}T${event.start
+            .clone()
+            .add('m', event.data.duration)
+            .format('HH:mm:ss')}`,
         ),
       );
     }
@@ -182,6 +200,7 @@ export const addEventsToCalendar = (currentDate, appointmentsMembers) => {
       events.push({
         resourceId: index,
         start: appointment.start,
+        end: appointment.end,
         data: appointment,
         color: eventColor,
         startEditable: !(appointment.status === 'PAID'),

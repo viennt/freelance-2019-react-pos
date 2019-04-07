@@ -74,7 +74,7 @@ import {
 const headers = {
   'Content-Type': 'application/json',
   Authorization:
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlRlc3QxQGdtYWlsLmNvbSIsIm1lcmNoYW50SWQiOiIzIiwiU3RvcmVJZCI6IjEiLCJqdGkiOiJjMGQzOWM0NS0xZjEwLTRiMDgtYThlZS00OTFiYWFiYWMwODgiLCJleHAiOjE1NTQ1ODIyOTksImlzcyI6IlRlc3QuY29tIiwiYXVkIjoiVGVzdC5jb20ifQ.hMawtPCM6PXlc_tLcvYLI67k73fatrcNn8gK3sgCLI0',
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlRlc3QxQGdtYWlsLmNvbSIsIm1lcmNoYW50SWQiOiIzIiwiU3RvcmVJZCI6IjEiLCJqdGkiOiJmYjRiYjE5MS1jN2IwLTRjZTUtODdjZC0wNTQwODFmNTk0NzQiLCJleHAiOjE1NTQ2MzExOTcsImlzcyI6IlRlc3QuY29tIiwiYXVkIjoiVGVzdC5jb20ifQ.4uK70wlK-w_3bWR-VODZcpZrZaCvIRVbmVhM6UT6cRM',
 };
 
 const appointmentAdapter = appointment => {
@@ -108,8 +108,19 @@ const appointmentAdapter = appointment => {
         : 'CONFIRMED',
     memberId: appointment.staffId,
     start: appointment.start,
+    end: appointment.end,
   };
 };
+
+const memberAdapter = member => ({
+  id: member.id,
+  title: `${member.first_name} ${member.last_name}`,
+  imageUrl:
+    (member.imageurl &&
+      `https://hp-api-dev.azurewebsites.net/${member.imageurl}`) ||
+    'https://png.pngtree.com/svg/20161027/631929649c.svg',
+  orderNumber: member.orderNumber,
+});
 
 export function* getMembers() {
   try {
@@ -130,15 +141,7 @@ export function* getMembers() {
     const members =
       response &&
       response.data &&
-      response.data.map(member => ({
-        id: member.id,
-        title: `${member.first_name} ${member.last_name}`,
-        imageUrl:
-          (member.imageurl &&
-            `https://hp-api-dev.azurewebsites.net/${member.imageurl}`) ||
-          'https://png.pngtree.com/svg/20161027/631929649c.svg',
-        orderNumber: member.orderNumber,
-      }));
+      response.data.map(member => memberAdapter(member));
     /* --------------------------------------------------------------- */
     /* --------------------------------------------------------------- */
     yield put(membersLoaded(members));
@@ -299,6 +302,7 @@ export function* moveAppointment(action) {
   const appointment = {
     ...movedAppointment,
     start: action.newTime,
+    end: action.newEndTime,
     memberId: assignedMember.id,
   };
 

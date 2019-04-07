@@ -19,7 +19,9 @@ export const appointments = [
     ],
     status: 'ASSIGNED',
     memberId: 1,
-    start: '2019-04-07T07:00:00',
+    start: '2019-04-08T07:00:00',
+    end: '2019-04-08T08:30:00',
+    duration: 90,
   },
   {
     id: 12,
@@ -41,7 +43,9 @@ export const appointments = [
     ],
     status: 'CHECKED_IN',
     memberId: 2,
-    start: '2019-04-07T07:00:00',
+    start: '2019-04-08T07:00:00',
+    end: '2019-04-08T09:30:00',
+    duration: 150,
   },
   {
     id: 32,
@@ -63,7 +67,9 @@ export const appointments = [
     ],
     status: 'CONFIRMED',
     memberId: 1,
-    start: '2019-04-07T08:30:00',
+    start: '2019-04-08T08:30:00',
+    end: '2019-04-08T10:30:00',
+    duration: 120,
   },
   {
     id: 13,
@@ -86,6 +92,8 @@ export const appointments = [
     status: 'WAITING',
     memberId: null,
     start: null,
+    end: null,
+    duration: 90,
   },
   {
     id: 14,
@@ -108,6 +116,8 @@ export const appointments = [
     status: 'WAITING',
     memberId: null,
     start: null,
+    end: null,
+    duration: 90,
   },
   {
     id: 15,
@@ -130,6 +140,8 @@ export const appointments = [
     status: 'WAITING',
     memberId: null,
     start: null,
+    end: null,
+    duration: 150,
   },
   {
     id: 16,
@@ -152,6 +164,8 @@ export const appointments = [
     status: 'WAITING',
     memberId: null,
     start: null,
+    end: null,
+    duration: 120,
   },
   {
     id: 17,
@@ -174,5 +188,7 @@ export const appointments = [
     status: 'WAITING',
     memberId: null,
     start: null,
+    end: null,
+    duration: 90,
   },
 ];
