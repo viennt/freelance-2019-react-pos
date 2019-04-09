@@ -86,6 +86,8 @@ const appointmentAdapter = appointment => {
       options.push({
         id: service.id,
         name: service.name,
+        duration: service.duration,
+        price: service.price,
       });
     });
   }
@@ -123,6 +125,17 @@ const memberAdapter = member => ({
     'https://png.pngtree.com/svg/20161027/631929649c.svg',
   orderNumber: member.orderNumber,
 });
+
+const statusConvertData = {
+  ASSIGNED: 'UnConfirm',
+  CONFIRMED: 'Confirm',
+  CHECKED_IN: 'CheckIn',
+  PAID: 'Paid',
+  WAITING: 'Waiting',
+  CANCEL: 'Cancel',
+};
+
+const statusAdapter = status => statusConvertData[status];
 
 export function* getMembers() {
   try {
@@ -451,11 +464,14 @@ export function* updateStatusAppointment(action) {
     formData.append('total', 1);
     formData.append('duration', 1);
     formData.append('waitingtime', 1);
-    formData.append('CheckinStatus', fcEvent.data.status);
+    formData.append('CheckinStatus', statusAdapter(fcEvent.data.status));
     formData.append('PaidStatus', 'false');
     formData.append('Status', 1);
     formData.append('CreateDate', fcEvent.data.start);
-    formData.append('BookingServices2', '');
+    formData.append(
+      'BookingServices2',
+      `[${action.bookingServices.join(', ')}]`,
+    );
     // const options = {
     //   method: 'POST',
     //   body: JSON.stringify({

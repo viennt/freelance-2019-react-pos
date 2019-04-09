@@ -15,7 +15,8 @@ export function mapDispatchToProps(dispatch) {
   return {
     deselectAppointment: () => dispatch(deselectAppointment()),
     cancelAppointment: id => dispatch(cancelAppointment(id)),
-    nextStatus: id => dispatch(updateStatusAppointment(id)),
+    nextStatus: (id, services) =>
+      dispatch(updateStatusAppointment(id, services)),
   };
 }
 

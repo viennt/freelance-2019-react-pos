@@ -408,12 +408,14 @@ export function appointmentCancellingError(error) {
 /**
  * Update status of appointment, this action starts the request saga
  * @param  {number} appointmentId The error
+ * @param  {object} bookingServices The error
  * @return {object} An action object with a type of UPDATE_STATUS_APPOINTMENT
  */
-export function updateStatusAppointment(appointmentId) {
+export function updateStatusAppointment(appointmentId, bookingServices) {
   return {
     type: UPDATE_STATUS_APPOINTMENT,
     appointmentId,
+    bookingServices,
   };
 }
 
