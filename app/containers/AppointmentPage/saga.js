@@ -1,6 +1,7 @@
 import { delay } from 'redux-saga';
 import { call, fork, put, takeLatest, all, select } from 'redux-saga/effects';
 import moment from 'moment';
+import axios from 'axios';
 
 import request from 'utils/request';
 
@@ -53,11 +54,11 @@ import {
   GET_MEMBERS_API,
   GET_WAITING_APPOINTMENTS_API,
   GET_APPOINTMENTS_BY_MEMBERS_DATE_API,
-  // POST_ASSIGN_APPOINTMENT_API,
-  // POST_MOVE_APPOINTMENT_API,
+  POST_ASSIGN_APPOINTMENT_API,
+  POST_MOVE_APPOINTMENT_API,
   // POST_PUT_BACK_APPOINTMENT_API
   // POST_CANCEL_APPOINTMENT_API
-  // POST_STATUS_APPOINTMENT_API
+  POST_STATUS_APPOINTMENT_API,
 } from '../../../app-constants';
 
 // import { members as mockedMembers } from '../../assets/mocks/members';
@@ -70,11 +71,12 @@ import {
 } from '../../components/Calendar/constants';
 
 /* **************************** API Caller ********************************* */
+// eslint-disable-next-line no-restricted-globals
+const token = location.search.replace('?token=', '');
 
 const headers = {
   'Content-Type': 'application/json',
-  Authorization:
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlRlc3QxQGdtYWlsLmNvbSIsIm1lcmNoYW50SWQiOiIzIiwiU3RvcmVJZCI6IjEiLCJqdGkiOiJmYjRiYjE5MS1jN2IwLTRjZTUtODdjZC0wNTQwODFmNTk0NzQiLCJleHAiOjE1NTQ2MzExOTcsImlzcyI6IlRlc3QuY29tIiwiYXVkIjoiVGVzdC5jb20ifQ.4uK70wlK-w_3bWR-VODZcpZrZaCvIRVbmVhM6UT6cRM',
+  Authorization: `Bearer ${token}`,
 };
 
 const appointmentAdapter = appointment => {
@@ -250,22 +252,28 @@ export function* assignAppointment(action) {
   try {
     /* |||||||||||||||||||||| MOCKED DATA BLOCK |||||||||||||||||||||| */
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
-    yield delay(200);
-    const result = mockedPostAppointment;
+    // yield delay(200);
+    // const result = mockedPostAppointment;
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
     /* ------------------ REAL DATA FROM API BLOCK ------------------- */
     /* --------------------------------------------------------------- */
-    // const requestURL = new URL(POST_ASSIGN_APPOINTMENT_API);
+    const requestURL = new URL(POST_ASSIGN_APPOINTMENT_API);
+    const formData = new FormData();
+    formData.append('FromTime', appointment.start);
+    formData.append('staff_id', appointment.memberId);
+    formData.append('appointment_id', appointment.id);
     // const options = {
     //   method: 'POST',
-    //   body: JSON.stringify({
-    //     memberId: appointment.memberId,
-    //     appointmentId: appointment.id,
-    //   }),
+    //   headers: {
+    //     ...headers,
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    //   body: formData,
     // };
     // const result = yield call(request, requestURL.toString(), options);
+    const result = dragAppointment(requestURL.toString(), formData);
     /* --------------------------------------------------------------- */
     /* --------------------------------------------------------------- */
     if (result) {
@@ -309,22 +317,28 @@ export function* moveAppointment(action) {
   try {
     /* |||||||||||||||||||||| MOCKED DATA BLOCK |||||||||||||||||||||| */
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
-    yield delay(200);
-    const result = mockedPostAppointment;
+    // yield delay(200);
+    // const result = mockedPostAppointment;
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
     /* ------------------ REAL DATA FROM API BLOCK ------------------- */
     /* --------------------------------------------------------------- */
-    // const requestURL = new URL(POST_MOVE_APPOINTMENT_API);
+    const requestURL = new URL(POST_MOVE_APPOINTMENT_API);
+    const formData = new FormData();
+    formData.append('FromTime', appointment.start);
+    formData.append('staff_id', appointment.memberId);
+    formData.append('appointment_id', appointment.id);
     // const options = {
     //   method: 'POST',
-    //   body: JSON.stringify({
-    //     memberId: appointment.memberId,
-    //     appointmentId: appointment.id,
-    //   }),
+    //   headers: {
+    //     ...headers,
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    //   body: formData,
     // };
     // const result = yield call(request, requestURL.toString(), options);
+    const result = dragAppointment(requestURL.toString(), formData);
     /* --------------------------------------------------------------- */
     /* --------------------------------------------------------------- */
     if (result) {
@@ -418,14 +432,30 @@ export function* updateStatusAppointment(action) {
   try {
     /* |||||||||||||||||||||| MOCKED DATA BLOCK |||||||||||||||||||||| */
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
-    yield delay(200);
-    const result = mockedPostAppointment;
+    // yield delay(200);
+    // const result = mockedPostAppointment;
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
     /* ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
 
     /* ------------------ REAL DATA FROM API BLOCK ------------------- */
     /* --------------------------------------------------------------- */
-    // const requestURL = new URL(POST_STATUS_APPOINTMENT_API);
+    const requestURL = new URL(POST_STATUS_APPOINTMENT_API);
+    const formData = new FormData();
+    formData.append('id', fcEvent.data.id);
+    formData.append('Staff_id', fcEvent.data.memberId);
+    formData.append('StoreId', 1);
+    formData.append('FromTime', fcEvent.data.start);
+    formData.append('ToTime', fcEvent.data.end);
+    formData.append('TipPercent', 1);
+    formData.append('User_id', 1);
+    formData.append('total', 1);
+    formData.append('duration', 1);
+    formData.append('waitingtime', 1);
+    formData.append('CheckinStatus', fcEvent.data.status);
+    formData.append('PaidStatus', 'false');
+    formData.append('Status', 1);
+    formData.append('CreateDate', fcEvent.data.start);
+    formData.append('BookingServices2', '');
     // const options = {
     //   method: 'POST',
     //   body: JSON.stringify({
@@ -434,6 +464,7 @@ export function* updateStatusAppointment(action) {
     //   }),
     // };
     // const result = yield call(request, requestURL.toString(), options);
+    const result = dragAppointment(requestURL.toString(), formData);
     /* --------------------------------------------------------------- */
     /* --------------------------------------------------------------- */
     if (result) {
@@ -444,6 +475,7 @@ export function* updateStatusAppointment(action) {
       yield put(appointmentUpdatingStatusError(result));
     }
   } catch (err) {
+    console.error(err);
     yield put(appointmentUpdatingStatusError(err));
   }
 }
@@ -530,4 +562,18 @@ export default function* root() {
     fork(updateStatusAppointmentData),
     fork(cancelAppointmentData),
   ]);
+}
+
+async function dragAppointment(api, formData) {
+  return axios({
+    method: 'POST',
+    url: api,
+    data: formData,
+    headers,
+    config: {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  });
 }
